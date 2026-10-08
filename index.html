@@ -150,6 +150,14 @@ body { background-color:var(--bg) !important; color:var(--text) !important; }
 #sh-extras .xchip { margin:0; padding:6px 10px; font-size:0.85rem; }
 .cat-banner { height:140px; border-radius:16px; overflow:hidden; margin-bottom:6px; }
 .cat-banner svg, .cat-banner img { width:100%; height:100%; display:block; object-fit:cover; }
+ 
+#install-popup { display:none; position:fixed; inset:0; z-index:4000; background:rgba(0,0,0,.6); align-items:center; justify-content:center; padding:20px; }
+.ip-card { position:relative; width:100%; max-width:380px; background:var(--card); color:var(--text); border-radius:24px; padding:30px 22px 22px; text-align:center; border-top:6px solid #f97316; box-shadow:0 20px 50px rgba(0,0,0,.4); animation:slideDown .25s ease; }
+.ip-x { position:absolute; top:10px; left:10px; width:36px; height:36px; border-radius:50%; border:none; background:var(--chip); color:var(--text); font-size:1.1rem; font-weight:900; cursor:pointer; }
+.ip-icon { font-size:3.4rem; line-height:1; margin-bottom:10px; }
+.ip-title { font-size:1.5rem; font-weight:900; color:#ea580c; margin-bottom:8px; }
+.ip-text { font-size:.95rem; font-weight:700; color:var(--sub); line-height:1.6; margin-bottom:18px; }
+.ip-btn { width:100%; border:none; border-radius:14px; padding:15px; background:#f97316; color:#fff; font-family:'Cairo'; font-weight:900; font-size:1.15rem; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -296,6 +304,16 @@ body { background-color:var(--bg) !important; color:var(--text) !important; }
   <div class="sheet-bar">
     <div class="qty-stepper"><button class="step-btn" onclick="shQty(-1)">-</button><span id="sh-qty" class="g-qty">1</span><button class="step-btn" onclick="shQty(1)">+</button></div>
     <button id="sh-add" class="add-btn" onclick="addProd()">أضف للسلة</button>
+  </div>
+</div>
+ 
+<div id="install-popup">
+  <div class="ip-card">
+    <button class="ip-x" onclick="closeInstallPopup()" aria-label="إغلاق">✕</button>
+    <div class="ip-icon">📲</div>
+    <div class="ip-title">نزّل تطبيق Kرانش</div>
+    <div class="ip-text">اطلب أسرع وشوف المنيو في أي وقت من شاشة موبايلك الرئيسية، من غير ما تفتح المتصفح.</div>
+    <button id="popup-install-btn" class="ip-btn">تنزيل التطبيق</button>
   </div>
 </div>
  
@@ -1066,24 +1084,37 @@ body { background-color:var(--bg) !important; color:var(--text) !important; }
     function showInstallBanner() {
         let dismissed = false;
         try { dismissed = localStorage.getItem('kranch_install_dismissed') === '1'; } catch(e) {}
-        if (!isStandalone && !dismissed) banner.style.display = 'flex';
+        if (isStandalone || dismissed) return;
+        banner.style.display = 'flex';
+        let seen = false;
+        try { seen = sessionStorage.getItem('kranch_popup_seen') === '1'; } catch(e) {}
+        if (!seen) openInstallPopup();
     }
+    function openInstallPopup() {
+        document.getElementById('install-popup').style.display = 'flex';
+        try { sessionStorage.setItem('kranch_popup_seen', '1'); } catch(e) {}
+    }
+    function closeInstallPopup() { document.getElementById('install-popup').style.display = 'none'; }
+    function hideInstallUI() { banner.style.display = 'none'; closeInstallPopup(); }
     function dismissInstall() {
-        banner.style.display = 'none';
+        hideInstallUI();
         try { localStorage.setItem('kranch_install_dismissed', '1'); } catch(e) {}
     }
     window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; showInstallBanner(); });
-    window.addEventListener('appinstalled', () => { banner.style.display = 'none'; });
-    document.getElementById('install-btn').addEventListener('click', async () => {
+    window.addEventListener('appinstalled', hideInstallUI);
+    async function doInstall() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             await deferredPrompt.userChoice;
             deferredPrompt = null;
-            banner.style.display = 'none';
+            hideInstallUI();
         } else if (isIOS) {
+            closeInstallPopup();
             alert('اضغط زر المشاركة (المربع اللي فيه سهم) في Safari، وبعدها اختار "إضافة إلى الشاشة الرئيسية" (Add to Home Screen)');
         }
-    });
+    }
+    document.getElementById('install-btn').addEventListener('click', doInstall);
+    document.getElementById('popup-install-btn').addEventListener('click', doInstall);
     if (isIOS) showInstallBanner();
  
     init();
