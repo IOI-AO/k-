@@ -22,6 +22,68 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
 #install-banner button { border:none; border-radius:20px; padding:7px 16px; font-family:'Cairo'; font-weight:900; cursor:pointer; background:#fff; color:#c2410c; }
 #install-banner .x { background:transparent; color:#fff; padding:4px 8px; font-size:1.1rem; }
 #offline-bar { display:none; background:#1a1a1a; color:#fff; text-align:center; padding:8px; font-weight:700; font-size:0.85rem; }
+/* كروت الأصناف اللي ليها مقاسات */
+.size-chips { display:flex; gap:8px; margin-bottom:10px; }
+.size-chip { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px; border-radius:12px; border:2px solid #fed7aa; background:#fff7ed; color:#9a3412; cursor:pointer; font-family:'Cairo'; font-weight:900; }
+.size-chip .sz { font-size:0.95rem; }
+.size-chip .pr { font-size:0.8rem; opacity:0.85; }
+.size-chip.sel { background:#f97316; border-color:#ea580c; color:#fff; }
+.add-row { display:flex; align-items:center; gap:10px; }
+.qty-stepper { display:flex; align-items:center; gap:6px; background:#f3f4f6; border-radius:10px; padding:3px; }
+.step-btn { width:32px; height:32px; border:none; border-radius:8px; background:#fff; font-weight:900; font-size:1.1rem; cursor:pointer; color:#ea580c; }
+.g-qty { min-width:26px; text-align:center; font-weight:900; font-size:1.05rem; }
+.add-btn { flex:1; height:40px; border:none; border-radius:10px; background:#f97316; color:#fff; font-family:'Cairo'; font-weight:900; font-size:1rem; cursor:pointer; }
+.add-btn:disabled { background:#d1d5db; color:#6b7280; cursor:not-allowed; }
+.in-cart { margin-top:8px; font-weight:700; font-size:0.85rem; color:#15803d; }
+.in-cart:empty { display:none; }
+.group-note { margin-top:8px; }
+ 
+:root { --bg:#fffaf3; --card:#fff; --text:#1a1a1a; --sub:#666; --line:#e5e5e5; --chip:#f3f4f6; }
+[data-theme=dark] { --bg:#16110d; --card:#221b15; --text:#f5ede4; --sub:#b8a898; --line:#3a2f26; --chip:#2e251d; color-scheme:dark; }
+body { background-color:var(--bg) !important; color:var(--text) !important; }
+.search-container,.sticky-nav,.menu-card,.sheet,.sheet-bar { background-color:var(--card) !important; }
+.nav-link { background:var(--chip) !important; color:var(--text) !important; border-color:var(--line) !important; }
+.nav-link.active { background:#f97316 !important; color:#fff !important; }
+.search-input,.note-input { background:var(--chip) !important; color:var(--text) !important; border-color:var(--line) !important; }
+.item-desc { color:var(--sub); }
+[data-theme=dark] #cart-summary-items { background:rgba(34,27,21,.97); }
+[data-theme=dark] .summary-chip { background:#3a2515; color:#fdba74; border-color:#7c4a1c; }
+[data-theme=dark] .footer { background:var(--card); }
+[data-theme=dark] .footer p { color:var(--text) !important; }
+[data-theme=dark] .footer p:nth-of-type(4) { color:#fb923c !important; }
+[data-theme=dark] #order-modal { background:rgba(15,11,8,.98); }
+[data-theme=dark] #order-modal > div { background:var(--card) !important; }
+[data-theme=dark] #order-modal input,[data-theme=dark] #order-modal select,[data-theme=dark] #order-modal textarea { background:var(--chip) !important; color:var(--text) !important; border-color:var(--line) !important; }
+[data-theme=dark] .cart-modal-item-row { border-color:var(--line); }
+[data-theme=dark] .hero-section { background-color:#16110d; padding:14px; background-origin:content-box; }
+.prod { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); cursor:pointer; position:relative; }
+.prod:last-child { border-bottom:none; }
+.prod-txt { flex:1; min-width:0; }
+.prod-name { font-weight:900; font-size:1.05rem; line-height:1.3; }
+.prod-desc { font-size:.8rem; color:var(--sub); font-weight:700; margin-top:2px; }
+.prod-price { font-weight:900; color:#ea580c; margin-top:6px; }
+.thumb { width:96px; height:96px; border-radius:14px; object-fit:cover; flex-shrink:0; }
+.thumb.img-fallback { font-size:2.2rem; }
+.plus { position:absolute; left:8px; bottom:16px; width:30px; height:30px; border-radius:50%; background:#fff; color:#ea580c; font-weight:900; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.25); }
+.sheet { position:fixed; inset:0; z-index:2500; display:none; flex-direction:column; }
+.sheet.open { display:flex; }
+.sheet-body { flex:1; overflow-y:auto; }
+.sh-img { width:100%; height:270px; object-fit:cover; display:block; }
+.sh-img.img-fallback { font-size:5rem; }
+.sheet-x { position:absolute; top:14px; right:14px; z-index:2; width:40px; height:40px; border-radius:50%; border:none; background:#fff; color:#1a1a1a; font-size:1.1rem; font-weight:900; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3); }
+.sh-pad { padding:16px; }
+.sh-name { font-size:1.45rem; font-weight:900; }
+.sh-h { font-weight:900; font-size:1.1rem; margin:18px 0 6px; display:flex; align-items:center; gap:8px; }
+.req { background:#1a1a1a; color:#fff; font-size:.7rem; padding:2px 8px; border-radius:6px; }
+.opt { display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); cursor:pointer; font-weight:900; }
+.opt .opt-p { margin-right:auto; color:var(--sub); }
+.rad { width:22px; height:22px; border-radius:50%; border:2px solid #9ca3af; flex-shrink:0; }
+.opt.sel .rad { border-color:#f97316; background:radial-gradient(#f97316 45%,transparent 50%); }
+.sh-ex { background:var(--chip); margin:18px -16px 0; padding:2px 16px 12px; }
+.ex { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 0; font-weight:900; }
+.xchip { border:2px solid #fed7aa; background:var(--card); color:var(--text); border-radius:20px; padding:6px 12px; font-family:'Cairo'; font-weight:900; cursor:pointer; margin-right:6px; }
+.xchip.sel { background:#f97316; color:#fff; border-color:#ea580c; }
+.sheet-bar { display:flex; gap:10px; padding:12px 16px; border-top:1px solid var(--line); }
 .search-container { padding: 10px; background: #fff; position: sticky; top: 0; z-index: 1001; border-bottom: 2px solid #f97316; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .search-wrapper { position: relative; width: 100%; max-width: 576px; margin: 0 auto; }
 .search-input { width: 100%; padding: 12px 40px 12px 12px; border: 2px solid #eee; border-radius: 12px; outline: none; font-family: 'Cairo'; font-weight: 700; }
@@ -79,6 +141,15 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
 .cart-modal-minus { background: #e0e0e0; color: #555; }
 .cart-modal-qty { font-weight: 900; color: #ea580c; min-width: 18px; text-align: center; }
 .cart-modal-item-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
+#sh-extras { display:flex; gap:10px; overflow-x:auto; padding:4px 2px 10px; scroll-snap-type:x proximity; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+#sh-extras::-webkit-scrollbar { display:none; }
+#sh-extras .ex { flex:0 0 150px; flex-direction:column; justify-content:flex-start; gap:6px; padding:14px 8px 12px; background:var(--card); border:1px solid var(--line); border-radius:18px; scroll-snap-align:start; text-align:center; }
+.ex-e { font-size:2rem; line-height:1; }
+.ex-n { font-weight:900; }
+.ex-c { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#sh-extras .xchip { margin:0; padding:6px 10px; font-size:0.85rem; }
+.cat-banner { height:140px; border-radius:16px; overflow:hidden; margin-bottom:6px; }
+.cat-banner svg, .cat-banner img { width:100%; height:100%; display:block; object-fit:cover; }
 </style>
 </head>
 <body>
@@ -90,12 +161,13 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
 </div>
 <div id="offline-bar">📴 مفيش إنترنت - تقدر تتصفح المنيو بس، والطلب محتاج إنترنت</div>
  
-<div class="search-container">
-  <div class="search-wrapper">
+<div class="search-container" style="display:flex;gap:8px;align-items:center;max-width:none"><div style="max-width:576px;margin:0 auto;width:100%;display:flex;gap:8px;align-items:center">
+  <div class="search-wrapper" style="flex:1;margin:0">
     <input type="text" id="live-search" class="search-input" placeholder="🔍 ابحث عن أكلتك المفضلة..." oninput="doSearch()">
     <span id="clear-btn" class="clear-search" onclick="exitSearch()">✕</span>
   </div>
-</div>
+  <button id="theme-btn" onclick="toggleTheme()" style="border:none;background:var(--chip);border-radius:12px;width:44px;height:44px;font-size:1.2rem;cursor:pointer">🌙</button>
+</div></div>
  
 <div class="hero-section"></div>
  
@@ -123,44 +195,36 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
   </div>
  
   <div class="menu-card section-group" id="sec-pizza" style="border-top:4px solid #f97316;">
-    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🍕\')">
     <h2 class="section-title">🍕 البيتزا</h2>
     <div id="list-pizza"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-meals">
-    <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🍗\')">
     <h2 class="section-title">🍗 الوجبات</h2>
-    <p style="text-align: center; font-weight: 900; color: #ea580c; margin-bottom: 10px;">جميع الوجبات تحتوي على ارز - كول سلو - ثومية - عيش</p>
     <div id="list-meals"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-crepe">
-    <img src="https://images.unsplash.com/photo-1519671282429-b44660ead0a7?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🌯\')">
     <h2 class="section-title">🌯 الكريب</h2>
     <div id="list-crepe"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-pasta">
-    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🍝\')">
     <h2 class="section-title">🍝 المكرونة</h2>
     <div id="list-pasta"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-risotto">
-    <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🍚\')">
     <h2 class="section-title">🍚 الروزيتو</h2>
     <div id="list-risotto"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-tortilla">
-    <img src="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🌮\')">
     <h2 class="section-title">🌮 التورتيلا</h2>
     <div id="list-tortilla"></div>
   </div>
  
   <div class="menu-card section-group" id="sec-fries">
-    <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80" class="category-img" alt="" onerror="imgFail(this,\'🍟\')">
     <h2 class="section-title">🍟 البطاطس</h2>
     <div id="list-fries"></div>
   </div>
@@ -197,19 +261,41 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
     <div id="final-items-list" style="margin:20px 0; border-bottom:1px solid #eee; padding-bottom:10px; max-height: 250px; overflow-y: auto;"></div>
  
     <input type="text" id="user-name" placeholder="الاسم بالكامل" oninput="validateForm()" style="width:100%; padding:14px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px; font-family:'Cairo';">
-    <input type="tel" id="user-phone" placeholder="رقم الموبايل (11 رقم مصري)" maxlength="11" inputmode="numeric" oninput="validateForm()" style="width:100%; padding:14px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px; font-family:'Cairo';">
+    <input type="tel" id="user-phone" placeholder="رقم الموبايل" maxlength="11" inputmode="numeric" oninput="validateForm()" style="width:100%; padding:14px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px; font-family:'Cairo';">
     
-    <textarea id="user-addr" placeholder="العنوان بالتفصيل (مطلوب)" oninput="validateForm()" style="display:block; width:100%; padding:14px; margin-bottom:10px; border:2px solid #f97316; border-radius:10px; height:80px; font-family:'Cairo'; resize:none;"></textarea>
+    <select id="user-area" onchange="onAreaChange()" style="width:100%; padding:14px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px; font-family:'Cairo'; font-weight:700; background:#fff;">
+      <option value="" disabled selected>اختر المنطقة</option>
+    </select>
+    <textarea id="user-addr" placeholder="العنوان بالتفصيل" oninput="validateForm()" style="display:block; width:100%; padding:14px; margin-bottom:10px; border:2px solid #f97316; border-radius:10px; height:80px; font-family:'Cairo'; resize:none;"></textarea>
     <textarea id="order-notes" placeholder="ملاحظات عامة على الطلب (اختياري)..." style="width:100%; padding:14px; margin-bottom:10px; border:1px dashed #fbbf24; border-radius:10px; height:60px; font-family:'Cairo'; resize:none; background:#fffdf0;"></textarea>
  
-    <p id="phone-error" style="display:none; color:#dc2626; font-weight:700; font-size:0.85rem; margin:-4px 0 10px;">رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015</p>
+    <p id="phone-error" style="display:none; color:#dc2626; font-weight:700; font-size:0.85rem; margin:-4px 0 10px;">رقم الموبايل غير صحيح</p>
  
     <div style="display:flex; justify-content:space-between; font-weight:700; color:#555; margin-top:15px;"><span>حساب الأصناف</span><span><span id="items-total">0</span> LE</span></div>
-    <div style="display:flex; justify-content:space-between; font-weight:700; color:#555; margin-top:6px;"><span>مصاريف التوصيل 🛵</span><span>30 LE</span></div>
+    <div style="display:flex; justify-content:space-between; font-weight:700; color:#555; margin-top:6px;"><span>مصاريف التوصيل 🛵</span><span id="delivery-fee-val">—</span></div>
     <div style="text-align:center; font-weight:900; font-size:1.4rem; color:#c2410c; margin:18px 0;">الإجمالي الكلي: <span id="grand-total">0</span> LE</div>
  
     <button id="btn-send-wa" onclick="sendToWhatsApp()" style="width:100%; background:#16a34a; color:#fff; padding:18px; border-radius:12px; font-weight:900; font-size:1.1rem; border:none; cursor:pointer;">تأكيد وإرسال واتساب</button>
     <button onclick="closeOrderModal()" style="width:100%; background:none; color:#777; padding:12px; margin-top:8px; border:none; cursor:pointer; font-weight:700;">رجوع للقائمة</button>
+  </div>
+</div>
+ 
+<div id="sheet" class="sheet">
+  <button class="sheet-x" onclick="closeProd()">✕</button>
+  <div class="sheet-body">
+    <div id="sh-hero"></div>
+    <div class="sh-pad">
+      <h2 id="sh-name" class="sh-name"></h2>
+      <p id="sh-desc" style="color:var(--sub);font-weight:700;margin-top:4px"></p>
+      <div id="sh-sizes-wrap"><div class="sh-h">اختر المقاس <span class="req">مطلوب</span></div><div id="sh-sizes"></div></div>
+      <div id="sh-extras-wrap" class="sh-ex"><div class="sh-h">تُطلب معها عادةً</div><div id="sh-extras"></div></div>
+      <div class="sh-h">ملاحظات على الصنف</div>
+      <textarea id="sh-note" class="note-input" style="height:70px;resize:none" placeholder="مثال: بدون بصل..."></textarea>
+    </div>
+  </div>
+  <div class="sheet-bar">
+    <div class="qty-stepper"><button class="step-btn" onclick="shQty(-1)">-</button><span id="sh-qty" class="g-qty">1</span><button class="step-btn" onclick="shQty(1)">+</button></div>
+    <button id="sh-add" class="add-btn" onclick="addProd()">أضف للسلة</button>
   </div>
 </div>
  
@@ -275,17 +361,61 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
  
     function imgFail(img, emoji) {
         const d = document.createElement('div');
-        d.className = 'category-img img-fallback';
+        d.className = img.className + ' img-fallback';
         d.textContent = emoji;
         img.replaceWith(d);
     }
  
-    const DELIVERY_FEE = 30;
+    // المناطق وأسعار التوصيل - السعر بيتحسب في السيستم ومش بيظهر في القائمة
+    const DELIVERY_AREAS = [
+        {n:'الهلالي', p:25},
+        {n:'الجمهورية', p:25},
+        {n:'فريال', p:25},
+        {n:'النميس', p:25},
+        {n:'الأزهر', p:15},
+        {n:'مصنع سيد أو المجاهدين أو البيسري', p:25},
+        {n:'المكتبات', p:25},
+        {n:'الأربعين', p:30},
+        {n:'المعلمين', p:35},
+        {n:'النزلة', p:30},
+        {n:'مركز الفتح نفسه', p:40},
+        {n:'أبراج السعودين عند بنزيمة بني مر', p:40}
+    ];
+ 
+    function selectedArea() {
+        const v = document.getElementById('user-area').value;
+        return v === '' ? null : DELIVERY_AREAS[Number(v)];
+    }
+    function currentFee() {
+        const a = selectedArea();
+        return a ? a.p : 0;
+    }
+    function cartSum() {
+        let t = 0;
+        for (let id in cart) t += cart[id].qty * cart[id].price;
+        return t;
+    }
+    function refreshTotals() {
+        const a = selectedArea();
+        document.getElementById('items-total').innerText = cartSum();
+        document.getElementById('delivery-fee-val').innerText = a ? a.p + ' LE' : '—';
+        document.getElementById('grand-total').innerText = cartSum() + currentFee();
+    }
+    function onAreaChange() {
+        refreshTotals();
+        validateForm();
+    }
+    function buildAreaOptions() {
+        const sel = document.getElementById('user-area');
+        DELIVERY_AREAS.forEach((a, i) => {
+            const o = document.createElement('option');
+            o.value = i;
+            o.textContent = a.n;
+            sel.appendChild(o);
+        });
+    }
     let cart = {};
  
-    function norm(s) {
-        return s.toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
-    }
  
     function getSmartPrefix(catKey, itemName) {
         const prefixes = { pizza:'بيتزا ', crepe:'كريب ', meals:'وجبة ', pasta:'مكرونة ', risotto:'روزيتو ', tortilla:'تورتيلا ', addons:'إضافة ' };
@@ -294,13 +424,396 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
         return prefix;
     }
  
+    const SIZE_RE = /^(.*) \((صغير|وسط|كبير)\)$/;
+ 
+    // بيجمّع المقاسات بتاعة نفس الصنف في كارت واحد (بنفس ترتيب المنيو)
+    function buildGroups(key) {
+        const groups = []; const map = {};
+        menuData[key].forEach((item, idx) => {
+            const m = item.n.match(SIZE_RE);
+            if (!m) { groups.push({ single: true, item, idx }); return; }
+            if (!map[m[1]]) { map[m[1]] = { single: false, base: m[1], variants: [] }; groups.push(map[m[1]]); }
+            map[m[1]].variants.push({ item, idx, size: m[2] });
+        });
+        return groups;
+    }
+ 
+ 
+    function createGroupHTML(key, g) {
+        const ids = g.variants.map(v => `id_${key}_${v.idx}`).join(' ');
+        const chips = g.variants.map(v => `
+            <button type="button" class="size-chip" data-id="id_${key}_${v.idx}" data-name="${v.item.n}" data-price="${v.item.p}" onclick="pickSize(this)">
+                <span class="sz">${v.size}</span><span class="pr">${v.item.p} LE</span>
+            </button>`).join('');
+        return `
+        <div class="item-row group-row" data-cat="${key}" data-ids="${ids}">
+            <div class="item-name" style="padding:0 0 8px;">${g.base}</div>
+            <div class="size-chips">${chips}</div>
+            <div class="add-row">
+                <div class="qty-stepper">
+                    <button type="button" class="step-btn" onclick="stepQty(this, -1)">-</button>
+                    <span class="g-qty">1</span>
+                    <button type="button" class="step-btn" onclick="stepQty(this, 1)">+</button>
+                </div>
+                <button type="button" class="add-btn" disabled onclick="addFromGroup(this)">اختر المقاس</button>
+            </div>
+            <div class="in-cart"></div>
+            <div class="group-note" style="display:none;">
+                <input type="text" class="note-input" placeholder="إضافة ملاحظة (مثال: بدون بصل)..." onchange="updateGroupNote(this)">
+            </div>
+        </div>`;
+    }
+ 
+    function pickSize(btn) {
+        const row = btn.closest('.group-row');
+        row.querySelectorAll('.size-chip').forEach(c => c.classList.remove('sel'));
+        btn.classList.add('sel');
+        refreshAddBtn(row);
+    }
+ 
+    function stepQty(btn, d) {
+        const row = btn.closest('.group-row');
+        const el = row.querySelector('.g-qty');
+        el.innerText = Math.max(1, Math.min(99, Number(el.innerText) + d));
+        refreshAddBtn(row);
+    }
+ 
+    function refreshAddBtn(row) {
+        const sel = row.querySelector('.size-chip.sel');
+        const btn = row.querySelector('.add-btn');
+        if (!sel) { btn.disabled = true; btn.innerText = 'اختر المقاس'; return; }
+        const q = Number(row.querySelector('.g-qty').innerText);
+        btn.disabled = false;
+        btn.innerText = `إضافة · ${q * Number(sel.dataset.price)} LE`;
+    }
+ 
+    function addFromGroup(btn) {
+        const row = btn.closest('.group-row');
+        const sel = row.querySelector('.size-chip.sel');
+        if (!sel) return;
+        const qty = Number(row.querySelector('.g-qty').innerText);
+        const id = sel.dataset.id;
+        const note = row.querySelector('.group-note input').value.trim();
+        updateQty(id, sel.dataset.name, Number(sel.dataset.price), qty, row.dataset.cat);
+        if (cart[id] && note) { cart[id].note = note; syncUI(); }
+        row.querySelector('.g-qty').innerText = '1';
+        refreshAddBtn(row);
+        btn.classList.remove('ck-bounce'); void btn.offsetWidth; btn.classList.add('ck-bounce');
+    }
+ 
+    function updateGroupNote(inp) {
+        const row = inp.closest('.group-row');
+        row.dataset.ids.split(' ').forEach(id => { if (cart[id]) cart[id].note = inp.value.trim(); });
+        syncUI();
+    }
+ 
+ 
+    const CAT_IMG = {"pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80", "meals": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80", "crepe": "https://images.unsplash.com/photo-1519671282429-b44660ead0a7?w=800&q=80", "pasta": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&q=80", "risotto": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&q=80", "tortilla": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80", "fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80"};
+    const ITEM_IMG = {}; // مثال: 'pizza:مارجريتا': '117301.jpg'  (صورة مخصصة للصنف)
+    const CAT_EMOJI = {pizza:'🍕',meals:'🍗',crepe:'🌯',pasta:'🍝',risotto:'🍚',tortilla:'🌮',fries:'🍟'};
+    const EXTRAS = {
+        pizza:['تشيز','صوص','ثومية'], meals:['ارز سادة','كول سلو','ثومية','عيش','صوص','تشيز'],
+        crepe:['تشيز','صوص','ثومية','كرانش'], tortilla:['تشيز','صوص','ثومية','كرانش'],
+        pasta:['تشيز','صوص','ثومية','عيش'], risotto:['تشيز','صوص','ثومية','عيش'], fries:['تشيز','صوص','ثومية']
+    };
+    const $ = id => document.getElementById(id);
+    function emojiFor(key, n) {
+        if (key === 'meals') return /شيش/.test(n) ? '🍢' : /صينية/.test(n) ? '🍽️' : /Mix/i.test(n) ? '🍖' : '🍗';
+        if (key === 'crepe') return /بطاطس/.test(n) ? '🍟' : '🌯';
+        if (key === 'tortilla') return /بطاطس/.test(n) ? '🍟' : '🌮';
+        if (key === 'addons') return EX_EMOJI[n.replace(/ \(.*\)$/, '')] || '🥣';
+        return CAT_EMOJI[key] || '🍽️';
+    }
+    const EX_EMOJI = { 'تشيز':'🧀', 'صوص':'🥫', 'ثومية':'🧄', 'كول سلو':'🥗', 'عيش':'🥖', 'ارز سادة':'🍚', 'كرانش':'🍗' };
+    // صور بالكلمات المفتاحية (كل صنف له صورة مختلفة ثابتة). لو عندك صورة حقيقية للصنف حطها في ITEM_IMG وهي اللي هتظهر
+    function hashN(str) { let h = 7; for (const c of str) h = (h * 31 + c.charCodeAt(0)) % 9973; return h + 1; }
+    function kwFor(key, n) {
+        if (key === 'pizza') return /مارجريتا/.test(n) ? 'margherita,pizza/all' : /بيبروني|بيبيروني/.test(n) ? 'pepperoni,pizza/all' : /خضروات/.test(n) ? 'vegetable,pizza/all' : 'pizza';
+        if (key === 'meals') return /شيش/.test(n) ? 'kebab' : /اسكالوب|كوردن|بيكاتا/.test(n) ? 'chicken,dinner/all' : /Mix|صينية/i.test(n) ? 'grilled,chicken/all' : 'fried,chicken/all';
+        if (key === 'crepe') return /بطاطس/.test(n) ? 'fries' : 'crepe';
+        if (key === 'pasta') return /ماك/.test(n) ? 'macaroni' : 'pasta';
+        if (key === 'risotto') return /ريزو/.test(n) ? 'rice' : 'risotto';
+        if (key === 'tortilla') return /بطاطس/.test(n) ? 'fries' : 'burrito';
+        if (key === 'fries') return /جبنة/.test(n) ? 'cheese,fries/all' : 'fries';
+        return '';
+    }
+    function thumb(key, base, cls) {
+        const em = emojiFor(key, base);
+        const big = cls === 'sh-img';
+        const k = kwFor(key, base);
+        const src = ITEM_IMG[key + ':' + base] || '';
+        if (!src) return `<div class="${cls} img-fallback">${em}</div>`;
+        return `<img class="${cls}" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this,'${em}')">`;
+    }
+    function prodRowHTML(key, g, gi) {
+        const base = g.single ? g.item.n : g.base;
+        const price = g.single ? g.item.p : Math.min(...g.variants.map(v => v.item.p));
+        return `<div class="prod" onclick="openProd('${key}', ${gi})"><div class="prod-txt"><div class="prod-name">${base}</div><div class="prod-price">${g.single ? '' : 'يبدأ من '}${price} LE</div></div>${thumb(key, base, 'thumb')}<span class="plus">+</span></div>`;
+    }
+ 
+    const noteReg = {}; let noteN = 0;
+    function addLine(id, name, price, qty, cat, note) {
+        let key = id;
+        if (note) { if (!noteReg[note]) noteReg[note] = ++noteN; key = id + '_n' + noteReg[note]; }
+        if (!cart[key]) cart[key] = { name, price, qty: 0, note: note || '', cat };
+        cart[key].qty += qty;
+        syncUI();
+    }
+ 
+    let P = null;
+    function openProd(key, gi) {
+        const g = buildGroups(key)[gi];
+        const base = g.single ? g.item.n : g.base;
+        P = { key, g, sel: g.single ? 0 : -1, qty: 1 };
+        $('sh-hero').innerHTML = thumb(key, base, 'sh-img');
+        $('sh-name').innerText = base;
+        $('sh-desc').innerText = g.single && g.item.d ? 'يشمل: ' + g.item.d : '';
+        $('sh-sizes-wrap').style.display = g.single ? 'none' : 'block';
+        $('sh-sizes').innerHTML = g.single ? '' : g.variants.map((v, i) => `<div class="opt" onclick="pickOpt(${i})"><span class="rad"></span><span>${v.size}</span><span class="opt-p">${v.item.p} LE</span></div>`).join('');
+        let ex = '';
+        const addonGroups = buildGroups('addons');
+        (EXTRAS[key] || []).forEach(name => {
+            const a = addonGroups.find(x => (x.single ? x.item.n : x.base) === name);
+            if (!a) return;
+            const vs = a.single ? [{ item: a.item, idx: a.idx, size: '' }] : a.variants;
+            ex += `<div class="ex"><div class="ex-e">${EX_EMOJI[name] || '➕'}</div><div class="ex-n">${name}</div><div class="ex-c">${vs.map(v => `<button type="button" class="xchip" data-id="id_addons_${v.idx}" data-name="${v.item.n}" data-price="${v.item.p}" onclick="toggleEx(this)">${v.size ? v.size + ' ' : ''}${v.item.p}</button>`).join('')}</div></div>`;
+        });
+        $('sh-extras-wrap').style.display = ex ? 'block' : 'none';
+        $('sh-extras').innerHTML = ex;
+        $('sh-note').value = ''; $('sh-qty').innerText = '1';
+        $('sheet').classList.add('open'); document.body.style.overflow = 'hidden';
+        $('sheet').querySelector('.sheet-body').scrollTop = 0;
+        refreshSheet();
+    }
+    function closeProd() { $('sheet').classList.remove('open'); document.body.style.overflow = ''; }
+    function pickOpt(i) {
+        P.sel = i;
+        document.querySelectorAll('#sh-sizes .opt').forEach((o, j) => o.classList.toggle('sel', j === i));
+        refreshSheet();
+    }
+    function toggleEx(btn) {
+        const was = btn.classList.contains('sel');
+        btn.parentElement.querySelectorAll('.xchip').forEach(c => c.classList.remove('sel'));
+        if (!was) btn.classList.add('sel');
+        refreshSheet();
+    }
+    function shQty(d) { P.qty = Math.max(1, Math.min(99, P.qty + d)); $('sh-qty').innerText = P.qty; refreshSheet(); }
+    function refreshSheet() {
+        const b = $('sh-add');
+        if (P.sel < 0) { b.disabled = true; b.innerText = 'اختر المقاس'; return; }
+        let unit = P.g.single ? P.g.item.p : P.g.variants[P.sel].item.p;
+        document.querySelectorAll('#sh-extras .xchip.sel').forEach(c => unit += Number(c.dataset.price));
+        b.disabled = false; b.innerText = `أضف للسلة · ${unit * P.qty} LE`;
+    }
+    function addProd() {
+        if (P.sel < 0) return;
+        const v = P.g.single ? { item: P.g.item, idx: P.g.idx } : P.g.variants[P.sel];
+        addLine(`id_${P.key}_${v.idx}`, v.item.n, v.item.p, P.qty, P.key, $('sh-note').value.trim());
+        document.querySelectorAll('#sh-extras .xchip.sel').forEach(c => addLine(c.dataset.id, c.dataset.name, Number(c.dataset.price), P.qty, 'addons', ''));
+        closeProd(); ckShowToast('تمت الإضافة للسلة ✅');
+    }
+ 
+    function setTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        $('theme-btn').innerText = t === 'dark' ? '☀️' : '🌙';
+        document.querySelector('meta[name=theme-color]').content = t === 'dark' ? '#16110d' : '#f97316';
+        try { localStorage.setItem('kranch_theme', t); } catch(e) {}
+    }
+    function toggleTheme() { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+    let savedTheme = 'light'; try { savedTheme = localStorage.getItem('kranch_theme') || 'light'; } catch(e) {}
+    setTheme(savedTheme);
+ 
+    // ===== بحث ذكي: الترتيب والهمزات والتاء المربوطة والأخطاء الصغيرة مش فارقة =====
+    function norm(s) {
+        return String(s).toLowerCase()
+            .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+            .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+            .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/[ىئ]/g, 'ي').replace(/ؤ/g, 'و')
+            .replace(/ک/g, 'ك').replace(/ی/g, 'ي').replace(/ڤ/g, 'ف').replace(/پ/g, 'ب')
+            .replace(/([\u0621-\u064Aa-z])\1+/g, '$1');
+    }
+    function normTok(t) { t = norm(t); return (t.length > 3 && t.startsWith('ال')) ? t.slice(2) : t; }
+    function tokenize(s) { return norm(s).split(/[^\u0621-\u064Aa-z0-9]+/).filter(Boolean).map(normTok); }
+    const STOP = new Set(['من', 'في', 'على', 'علي', 'مع', 'بدون', 'غير', 'و']);
+    const ALT_RAW = {
+        'دجاج':['تشيكن'], 'فراخ':['تشيكن'], 'فرخه':['تشيكن'], 'تشكن':['تشيكن'], 'شيكن':['تشيكن'], 'chicken':['تشيكن'],
+        'pizza':['بيتزا'], 'بتزا':['بيتزا'], 'بيتسا':['بيتزا'], 'بيزا':['بيتزا'],
+        'crepe':['كريب'], 'crepes':['كريب'], 'pasta':['مكرونه'], 'باستا':['مكرونه'], 'معكرونه':['مكرونه'], 'مكرونات':['مكرونه'],
+        'risotto':['روزيتو'], 'ريزوتو':['روزيتو'], 'رزيتو':['روزيتو'], 'tortilla':['تورتيلا'],
+        'fries':['بطاطس'], 'فرايز':['بطاطس'], 'بطاطا':['بطاطس'], 'meal':['وجبه'], 'وجبات':['وجبه'],
+        'bbq':['باربيكيو'], 'barbecue':['باربيكيو'], 'باربكيو':['باربيكيو'], 'بربيكيو':['باربيكيو'],
+        'cheese':['تشيز'], 'جبنه':['تشيز', 'جبنه'], 'جبن':['تشيز', 'جبنه'], 'beef':['بيف', 'لحمه'], 'بيف':['بيف', 'لحمه'], 'لحمه':['لحمه', 'بيف'], 'لحم':['لحمه', 'لحوم', 'بيف'],
+        'ranch':['رانش'], 'رانتش':['رانش'], 'supreme':['سوبريم'], 'buffalo':['بافالو'], 'crunch':['كرانش'], 'crispy':['كرانش'], 'كرنش':['كرانش'],
+        'sauce':['صوص'], 'garlic':['ثوميه'], 'rice':['ارز'], 'bread':['عيش'], 'coleslaw':['كول'], 'fire':['فاير'], 'hot':['هوت'],
+        'margherita':['مارجريتا'], 'مارغريتا':['مارجريتا'], 'veggie':['خضروات'], 'vegetable':['خضروات'], 'خضار':['خضروات'], 'pepperoni':['بيبروني', 'بيبيروني'],
+        'sausage':['سجق'], 'kebab':['كباب'], 'shish':['شيش'], 'tawook':['طاووق'], 'smoky':['سموكي'], 'dynamite':['ديناميت'], 'cordon':['كوردن'],
+        'scallop':['اسكالوب'], 'mac':['ماك'], 'macaroni':['ماك'], 'bechamel':['باشاميل'], 'volcano':['فولكانو'], 'red':['ريد'],
+        'small':['صغير'], 'medium':['وسط'], 'large':['كبير'], 'big':['كبير'], 'كبيره':['كبير'], 'صغيره':['صغير'], 'متوسط':['وسط']
+    };
+    const ALT = {}; Object.keys(ALT_RAW).forEach(k => { ALT[normTok(k)] = ALT_RAW[k].map(normTok); });
+    const CAT_ALIAS = { pizza:'بيتزا', meals:'وجبه', crepe:'كريب', pasta:'مكرونه', risotto:'روزيتو', tortilla:'تورتيلا', fries:'بطاطس', addons:'اضافه اضافات' };
+    function lev(a, b) {
+        const m = a.length, n = b.length; let prev = Array.from({ length: n + 1 }, (_, j) => j);
+        for (let i = 1; i <= m; i++) {
+            const cur = [i];
+            for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+            prev = cur;
+        }
+        return prev[n];
+    }
+    function tokScore(q, t) {
+        if (q === t) return 4;
+        if (t.startsWith(q)) return 3;
+        if (q.length >= 3 && t.includes(q)) return 2;
+        if (q.length >= 4) {
+            if (lev(q, t) <= (q.length >= 6 ? 2 : 1)) return 1.5;
+            if (lev(q, t.slice(0, q.length)) <= 1) return 1;
+        }
+        return 0;
+    }
+    function queryTokens(raw) {
+        return tokenize(raw).filter(t => !STOP.has(t)).map(t => ALT[t] || [t]);
+    }
+    function scoreGroup(qt, key, g, strict) {
+        const label = g.single ? g.item.n : g.base;
+        const sizes = g.single ? '' : g.variants.map(v => v.size).join(' ');
+        const doc = tokenize(getSmartPrefix(key, label) + ' ' + label + ' ' + (CAT_ALIAS[key] || '') + ' ' + sizes);
+        let total = 0, hit = 0, low = 99;
+        qt.forEach(alts => {
+            let best = 0;
+            alts.forEach(q => doc.forEach(t => { best = Math.max(best, tokScore(q, t)); }));
+            if (best > 0) { hit++; total += best; low = Math.min(low, best); }
+        });
+        if (strict ? hit < qt.length : hit === 0) return 0;
+        return total + hit * 10 + (low >= 3 ? 1000 : 0);
+    }
+    function groupCards(key, scorer) {
+        const out = [];
+        buildGroups(key).forEach((g, gi) => {
+            const sc = scorer ? scorer(key, g) : 1;
+            if (sc > 0) out.push({ score: sc, html: prodRowHTML(key, g, gi) });
+        });
+        return out;
+    }
+    function groupsHTML(key) { return groupCards(key).map(x => x.html).join(''); }
+ 
+    function doSearch() {
+        const qt = queryTokens(document.getElementById('live-search').value);
+        if (!qt.length) return exitSearch();
+        document.getElementById('search-results-box').style.display = 'block';
+        document.getElementById('clear-btn').style.display = 'block';
+        document.querySelectorAll('.section-group').forEach(el => el.style.display = 'none');
+        document.getElementById('main-nav').style.display = 'none';
+ 
+        const collect = strict => {
+            let res = [];
+            for (let key in menuData) res = res.concat(groupCards(key, (k, g) => scoreGroup(qt, k, g, strict)));
+            res.sort((a, b) => b.score - a.score);
+            return (res.length && res[0].score >= 1000) ? res.filter(r => r.score >= 1000) : res;
+        };
+        let res = collect(true), note = '';
+        if (!res.length) { res = collect(false); if (res.length) note = '<p style="text-align:center; font-weight:700; color:var(--sub,#666); padding:6px 0 10px;">مفيش تطابق كامل، دي أقرب نتايج:</p>'; }
+        document.getElementById('search-list').innerHTML = res.length ? note + res.map(r => r.html).join('') : '<p style="text-align:center; font-weight:700; color:#666; padding:15px 0;">مفيش نتائج بالاسم ده</p>';
+        syncUI();
+    }
+ 
+    // ===== بانر لكل قسم (صورة حقيقية، ولو ما فتحتش بترجع للرسمة الأصلية) =====
+    const CAT_PHOTO = {
+        pizza:    'https://images.pexels.com/photos/2714722/pexels-photo-2714722.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        meals:    'https://images.pexels.com/photos/14686450/pexels-photo-14686450.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        crepe:    'https://images.pexels.com/photos/13870876/pexels-photo-13870876.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        pasta:    'https://images.pexels.com/photos/18367331/pexels-photo-18367331.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        risotto:  'https://images.pexels.com/photos/14709739/pexels-photo-14709739.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        tortilla: 'https://images.pexels.com/photos/37324429/pexels-photo-37324429.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        fries:    'https://images.pexels.com/photos/12946720/pexels-photo-12946720.jpeg?auto=compress&cs=tinysrgb&w=1000',
+        addons:   'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=1000&q=80'
+    };
+    function svgWrap(id, a, b, body) {
+        return `<svg viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bg-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="600" height="200" fill="url(#bg-${id})"/><circle cx="60" cy="40" r="60" fill="#fff" opacity=".13"/><circle cx="550" cy="170" r="80" fill="#fff" opacity=".13"/><circle cx="505" cy="30" r="24" fill="#fff" opacity=".16"/>${body}</svg>`;
+    }
+    function grains(cx, cy, rx, ry, n, cols) {
+        let seed = 11, out = '';
+        const r = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+        for (let i = 0; i < n; i++) {
+            const a = r() * 6.283, d = Math.sqrt(r()), x = (cx + Math.cos(a) * d * rx).toFixed(0), y = (cy + Math.sin(a) * d * ry).toFixed(0);
+            out += `<ellipse cx="${x}" cy="${y}" rx="5.5" ry="2.8" fill="${cols[Math.floor(r() * cols.length)]}" transform="rotate(${Math.floor(r() * 180)} ${x} ${y})"/>`;
+        }
+        return out;
+    }
+    const shadow = '<ellipse cx="300" cy="188" rx="120" ry="8" fill="#000" opacity=".16"/>';
+    const BANNERS = {
+        pizza: svgWrap('pizza', '#fdba74', '#f97316', `${shadow}
+            <circle cx="300" cy="104" r="82" fill="#d98b32"/><circle cx="300" cy="104" r="72" fill="#d8381e"/><circle cx="300" cy="104" r="68" fill="#f8cf55"/>
+            <g fill="#f0b52a" opacity=".75"><circle cx="268" cy="80" r="14"/><circle cx="333" cy="126" r="16"/><circle cx="300" cy="138" r="10"/><circle cx="262" cy="126" r="9"/><circle cx="335" cy="78" r="9"/></g>
+            <g fill="#b5251c"><circle cx="278" cy="70" r="13"/><circle cx="326" cy="76" r="13"/><circle cx="347" cy="106" r="12"/><circle cx="300" cy="104" r="13"/><circle cx="260" cy="104" r="11"/><circle cx="320" cy="136" r="12"/><circle cx="280" cy="138" r="11"/></g>
+            <g fill="#4caf50"><circle cx="300" cy="82" r="4"/><circle cx="283" cy="118" r="4"/><circle cx="340" cy="92" r="4"/><circle cx="305" cy="124" r="3"/></g>
+            <g stroke="#d98b32" stroke-width="3"><line x1="300" y1="32" x2="300" y2="176"/><line x1="228" y1="104" x2="372" y2="104"/><line x1="249" y1="53" x2="351" y2="155"/><line x1="351" y1="53" x2="249" y2="155"/></g>
+            <polygon points="478,52 438,150 518,150" fill="#f8cf55" stroke="#d98b32" stroke-width="6" stroke-linejoin="round"/><circle cx="478" cy="108" r="10" fill="#b5251c"/><circle cx="462" cy="134" r="8" fill="#b5251c"/>
+            <g transform="translate(130 112)"><circle r="30" fill="#e53935"/><path d="M-12 -26 L0 -36 L12 -26 L0 -20Z" fill="#4caf50"/></g><ellipse cx="170" cy="150" rx="22" ry="10" fill="#4caf50" transform="rotate(-25 170 150)"/>`),
+        meals: svgWrap('meals', '#fcd9a8', '#f59e0b', `${shadow}
+            <ellipse cx="300" cy="112" rx="140" ry="72" fill="#fff"/><ellipse cx="300" cy="112" rx="118" ry="58" fill="#f1f1f1"/>
+            <path d="M205 128 Q215 74 262 98 Q290 120 262 142 Q220 150 205 128Z" fill="#fffbe9" stroke="#e8dcb0" stroke-width="2"/>
+            <g fill="#e8dcb0"><circle cx="228" cy="112" r="2.5"/><circle cx="245" cy="104" r="2.5"/><circle cx="240" cy="128" r="2.5"/><circle cx="256" cy="120" r="2.5"/></g>
+            <g transform="rotate(-20 330 96)"><ellipse cx="330" cy="96" rx="44" ry="25" fill="#c8791f" stroke="#9a5410" stroke-width="3"/><circle cx="378" cy="92" r="7" fill="#fff" stroke="#e0d6c0"/><g fill="#9a5410"><circle cx="312" cy="90" r="3"/><circle cx="332" cy="104" r="3"/><circle cx="350" cy="88" r="3"/><circle cx="322" cy="78" r="2.5"/></g></g>
+            <g transform="rotate(14 340 132)"><ellipse cx="340" cy="132" rx="40" ry="22" fill="#d4872a" stroke="#9a5410" stroke-width="3"/><circle cx="384" cy="136" r="7" fill="#fff" stroke="#e0d6c0"/><g fill="#9a5410"><circle cx="322" cy="128" r="3"/><circle cx="345" cy="138" r="3"/><circle cx="356" cy="124" r="2.5"/></g></g>
+            <rect x="388" y="108" width="52" height="38" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/><ellipse cx="414" cy="108" rx="26" ry="9" fill="#a5d66a"/><circle cx="404" cy="106" r="4" fill="#9c5fb5"/><circle cx="424" cy="107" r="3" fill="#f6a21e"/>
+            <circle cx="238" cy="80" r="20" fill="#ecc57a" stroke="#c99a45" stroke-width="3"/><path d="M226 74 Q238 66 250 74" stroke="#c99a45" stroke-width="2" fill="none"/>`),
+        crepe: svgWrap('crepe', '#fde68a', '#f59e0b', `${shadow}
+            <ellipse cx="300" cy="140" rx="150" ry="40" fill="#fff"/><ellipse cx="300" cy="138" rx="128" ry="30" fill="#f1f1f1"/>
+            <path d="M300 160 L200 100 Q300 -5 400 100 Z" fill="#f2c473" stroke="#d99a3a" stroke-width="4" stroke-linejoin="round"/>
+            <g stroke="#d99a3a" stroke-width="2.5" opacity=".7"><line x1="300" y1="160" x2="248" y2="58"/><line x1="300" y1="160" x2="300" y2="46"/><line x1="300" y1="160" x2="352" y2="58"/></g>
+            <g><path d="M226 80 Q240 52 262 66 Q272 48 292 60 Q312 44 330 62 Q354 50 372 80 Q330 70 300 76 Q260 70 226 80Z" fill="#7bc043"/><circle cx="262" cy="70" r="9" fill="#e53935"/><circle cx="318" cy="66" r="9" fill="#e53935"/><ellipse cx="290" cy="64" rx="14" ry="9" fill="#b9722f"/><ellipse cx="340" cy="72" rx="12" ry="8" fill="#a8641f"/><ellipse cx="244" cy="76" rx="11" ry="7" fill="#a8641f"/></g>
+            <g transform="translate(470 124) rotate(-18)"><rect x="-55" y="-22" width="110" height="44" rx="22" fill="#f2c473" stroke="#d99a3a" stroke-width="4"/><ellipse cx="55" cy="0" rx="12" ry="22" fill="#e8b058" stroke="#d99a3a" stroke-width="3"/><circle cx="55" cy="-6" r="6" fill="#7bc043"/><circle cx="56" cy="6" r="6" fill="#b9722f"/></g>
+            <g transform="translate(130 128)"><circle r="26" fill="#e53935"/><path d="M-10 -22 L0 -31 L10 -22 L0 -17Z" fill="#4caf50"/></g>`),
+        pasta: svgWrap('pasta', '#fecaca', '#ef4444', `${shadow}
+            <path d="M196 108 H404 Q404 182 300 182 Q196 182 196 108Z" fill="#fff" stroke="#ddd" stroke-width="3"/><rect x="190" y="102" width="220" height="12" rx="6" fill="#f4f4f4" stroke="#ddd" stroke-width="2"/>
+            <g fill="none" stroke="#f4c542" stroke-width="9" stroke-linecap="round"><path d="M212 104 Q240 52 276 92 T340 90 T392 104"/><path d="M222 100 Q256 66 288 98 T350 84 T386 100"/><path d="M236 98 Q268 40 300 82 T372 78"/><path d="M250 96 Q280 62 314 90 T380 96"/><path d="M230 104 Q262 82 296 104 T372 106"/></g>
+            <path d="M246 80 Q300 28 354 80 Q300 100 246 80Z" fill="#d9431f"/><g fill="#a52a12" opacity=".6"><circle cx="280" cy="68" r="5"/><circle cx="322" cy="70" r="5"/><circle cx="300" cy="82" r="5"/></g>
+            <g fill="#4caf50"><ellipse cx="300" cy="52" rx="12" ry="6" transform="rotate(-25 300 52)"/><ellipse cx="318" cy="58" rx="10" ry="5" transform="rotate(20 318 58)"/></g>
+            <g stroke="#9aa0a6" stroke-width="5" stroke-linecap="round"><line x1="470" y1="40" x2="470" y2="150"/><line x1="458" y1="40" x2="458" y2="80"/><line x1="482" y1="40" x2="482" y2="80"/><line x1="470" y1="40" x2="470" y2="80"/></g>`),
+        risotto: svgWrap('risotto', '#bbf7d0', '#16a34a', `${shadow}
+            <path d="M196 108 H404 Q404 182 300 182 Q196 182 196 108Z" fill="#fff" stroke="#ddd" stroke-width="3"/><rect x="190" y="102" width="220" height="12" rx="6" fill="#f4f4f4" stroke="#ddd" stroke-width="2"/>
+            <ellipse cx="300" cy="96" rx="92" ry="48" fill="#fff6d6"/>${grains(300, 94, 88, 44, 190, ['#fffdf4', '#fff3c4', '#fffdf4', '#f7a23b', '#6bbf4b', '#e04b3a'])}
+            <g fill="#4caf50"><ellipse cx="300" cy="62" rx="12" ry="6" transform="rotate(-25 300 62)"/><ellipse cx="318" cy="68" rx="10" ry="5" transform="rotate(20 318 68)"/></g>
+            <g stroke="#9aa0a6" stroke-width="5" stroke-linecap="round"><line x1="480" y1="40" x2="480" y2="150"/><line x1="468" y1="40" x2="468" y2="80"/><line x1="492" y1="40" x2="492" y2="80"/></g>`),
+        tortilla: svgWrap('tortilla', '#fed7aa', '#ea580c', `${shadow}
+            <g transform="rotate(-14 300 118)"><rect x="170" y="86" width="250" height="84" rx="42" fill="#f0d49a" stroke="#d9b36a" stroke-width="4"/><rect x="170" y="120" width="160" height="50" rx="25" fill="#cfd4d8" stroke="#aeb5ba" stroke-width="3"/><ellipse cx="418" cy="128" rx="18" ry="42" fill="#e8c27a" stroke="#d9b36a" stroke-width="4"/><circle cx="418" cy="110" r="8" fill="#7bc043"/><circle cx="418" cy="130" r="9" fill="#b9722f"/><circle cx="419" cy="148" r="7" fill="#e53935"/></g>
+            <g transform="rotate(10 380 70)"><rect x="300" y="38" width="170" height="56" rx="28" fill="#f0d49a" stroke="#d9b36a" stroke-width="4" opacity=".95"/><ellipse cx="466" cy="66" rx="12" ry="28" fill="#e8c27a" stroke="#d9b36a" stroke-width="3"/><circle cx="466" cy="56" r="5" fill="#7bc043"/><circle cx="466" cy="68" r="6" fill="#b9722f"/><circle cx="466" cy="79" r="4" fill="#e53935"/></g>`),
+        fries: svgWrap('fries', '#fef08a', '#eab308', `${shadow}
+            <g fill="#f7c331" stroke="#d9a21b" stroke-width="2"><rect x="244" y="34" width="13" height="80" rx="4" transform="rotate(-12 250 74)"/><rect x="262" y="22" width="13" height="90" rx="4" transform="rotate(-6 268 66)"/><rect x="280" y="30" width="13" height="84" rx="4"/><rect x="298" y="18" width="13" height="96" rx="4" transform="rotate(5 304 66)"/><rect x="316" y="28" width="13" height="86" rx="4" transform="rotate(10 322 70)"/><rect x="334" y="36" width="13" height="78" rx="4" transform="rotate(16 340 74)"/><rect x="352" y="46" width="13" height="68" rx="4" transform="rotate(22 358 80)"/></g>
+            <path d="M232 96 L368 96 L352 184 L248 184 Z" fill="#e53935" stroke="#b71c1c" stroke-width="3" stroke-linejoin="round"/><path d="M238 128 H362 L358 150 H242 Z" fill="#fff" opacity=".92"/><circle cx="300" cy="139" r="9" fill="#e53935"/>
+            <g transform="translate(450 150)"><path d="M-30 -30 H30 L24 20 H-24 Z" fill="#fff" stroke="#ddd" stroke-width="3"/><ellipse cx="0" cy="-30" rx="30" ry="9" fill="#e53935"/></g>
+            <g transform="translate(150 150)"><path d="M-30 -30 H30 L24 20 H-24 Z" fill="#fff" stroke="#ddd" stroke-width="3"/><ellipse cx="0" cy="-30" rx="30" ry="9" fill="#fb923c"/></g>`),
+        addons: svgWrap('addons', '#e9d5ff', '#9333ea', `${shadow}
+            <g transform="translate(200 120)"><path d="M-42 -32 H42 L34 44 H-34 Z" fill="#fff" stroke="#ddd" stroke-width="3"/><ellipse cx="0" cy="-32" rx="42" ry="12" fill="#fffdf4" stroke="#ddd" stroke-width="2"/></g>
+            <g transform="translate(300 112)"><path d="M-46 -38 H46 L37 52 H-37 Z" fill="#fff" stroke="#ddd" stroke-width="3"/><ellipse cx="0" cy="-38" rx="46" ry="13" fill="#e53935"/><ellipse cx="-12" cy="-40" rx="14" ry="4" fill="#ff8a80" opacity=".8"/></g>
+            <g transform="translate(400 120)"><path d="M-42 -32 H42 L34 44 H-34 Z" fill="#fff" stroke="#ddd" stroke-width="3"/><ellipse cx="0" cy="-32" rx="42" ry="12" fill="#fbbf24"/></g>
+            <circle cx="470" cy="60" r="22" fill="#ecc57a" stroke="#c99a45" stroke-width="3"/><circle cx="130" cy="64" r="16" fill="#f8cf55" stroke="#d9a21b" stroke-width="3"/>`)
+    };
+    function buildBanners() {
+        for (const key in BANNERS) {
+            const sec = document.getElementById('sec-' + key);
+            if (!sec || sec.querySelector('.cat-banner')) continue;
+            const div = document.createElement('div');
+            div.className = 'cat-banner';
+            div.innerHTML = BANNERS[key];
+            if (CAT_PHOTO[key]) {
+                const img = new Image();
+                img.alt = '';
+                img.onload = () => { div.innerHTML = ''; div.appendChild(img); };
+                img.src = CAT_PHOTO[key];
+            }
+            sec.insertBefore(div, sec.firstChild);
+        }
+    }
+ 
     function init() {
+        buildBanners();
+        buildAreaOptions();
         for(let key in menuData) {
             let container = document.getElementById('list-' + key);
             if(container) {
-                menuData[key].forEach((item, index) => {
-                    container.innerHTML += createRowHTML(item, `id_${key}_${index}`, key);
-                });
+                container.innerHTML = groupsHTML(key, '');
             }
         }
         loadReorder();
@@ -376,6 +889,20 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
             </span>`;
         }
  
+        document.querySelectorAll('.group-row').forEach(row => {
+            const ids = row.dataset.ids.split(' ').filter(id => cart[id]);
+            const info = row.querySelector('.in-cart');
+            const noteBox = row.querySelector('.group-note');
+            if (!ids.length) { info.innerHTML = ''; noteBox.style.display = 'none'; return; }
+            info.innerText = '✓ في الطلب: ' + ids.map(id => {
+                const m = cart[id].name.match(SIZE_RE);
+                return `${m ? m[2] : ''} ×${cart[id].qty}`;
+            }).join(' · ');
+            noteBox.style.display = 'block';
+            const inp = noteBox.querySelector('input');
+            if (inp !== document.activeElement) inp.value = cart[ids[0]].note || '';
+        });
+ 
         document.getElementById('cart-summary-items').innerHTML = chipsHTML;
         document.getElementById('cart-count').innerText = totalQty;
         document.getElementById('cart-total').innerText = totalPrice + ' LE';
@@ -402,24 +929,6 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
         window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 130, behavior: 'smooth' });
     }
  
-    function doSearch() {
-        let q = norm(document.getElementById('live-search').value.trim());
-        if(q.length < 1) return exitSearch();
-        document.getElementById('search-results-box').style.display = 'block';
-        document.getElementById('clear-btn').style.display = 'block';
-        document.querySelectorAll('.section-group').forEach(el => el.style.display = 'none');
-        document.getElementById('main-nav').style.display = 'none';
- 
-        let html = '';
-        for(let key in menuData) {
-            menuData[key].forEach((item, index) => {
-                let prefix = getSmartPrefix(key, item.n);
-                if(norm(prefix + item.n).includes(q)) html += createRowHTML(item, `id_${key}_${index}`, key);
-            });
-        }
-        document.getElementById('search-list').innerHTML = html || '<p style="text-align:center; font-weight:700; color:#666; padding:15px 0;">مفيش نتائج بالاسم ده</p>';
-        syncUI();
-    }
  
     function exitSearch() {
         document.getElementById('live-search').value = '';
@@ -440,8 +949,11 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
             document.getElementById('sec-reorder').style.display = 'block';
             document.getElementById('nav-reorder').style.display = 'inline-block';
             list.innerHTML = '';
+            const seen = {};
             for(let id in last) {
-                list.innerHTML += createRowHTML({n: last[id].name, p: last[id].price}, id, last[id].cat);
+                const bid = id.replace(/_n\d+$/, '');
+                if (seen[bid]) continue; seen[bid] = 1;
+                list.innerHTML += createRowHTML({n: last[id].name, p: last[id].price}, bid, last[id].cat);
             }
             syncUI();
         }
@@ -475,8 +987,7 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
         }
  
         document.getElementById('final-items-list').innerHTML = h;
-        document.getElementById('items-total').innerText = sum;
-        document.getElementById('grand-total').innerText = sum + DELIVERY_FEE;
+        refreshTotals();
         validateForm();
     }
  
@@ -491,7 +1002,7 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
         const phoneOk = /^01[0125][0-9]{8}$/.test(phone);
         document.getElementById('phone-error').style.display = (phone.length > 0 && !phoneOk) ? 'block' : 'none';
         phoneEl.style.borderColor = (phone.length > 0 && !phoneOk) ? '#dc2626' : '#ddd';
-        const ok = navigator.onLine && phoneOk
+        const ok = navigator.onLine && phoneOk && selectedArea() !== null
             && document.getElementById('user-name').value.trim() !== ''
             && document.getElementById('user-addr').value.trim() !== '';
         const btn = document.getElementById('btn-send-wa');
@@ -509,9 +1020,10 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
         let name = document.getElementById('user-name').value.trim();
         let phone = document.getElementById('user-phone').value.trim();
         let addr = document.getElementById('user-addr').value.trim();
+        let area = selectedArea();
         let gNotes = document.getElementById('order-notes').value.trim();
  
-        let msg = `طلب جديد\nالاسم: ${name}\nالموبايل: ${phone}\nالعنوان: ${addr}\n\nالاصناف:\n`;
+        let msg = `طلب جديد\nالاسم: ${name}\nالموبايل: ${phone}\nالمنطقة: ${area.n}\nالعنوان: ${addr}\n\nالاصناف:\n`;
         let total = 0;
         for(let id in cart) {
             let p = cart[id].qty * cart[id].price; total += p;
@@ -520,7 +1032,7 @@ body { font-family: 'Cairo', sans-serif; background-color: #fffaf3; color: #1a1a
             if(cart[id].note) msg += `ملاحظة: ${cart[id].note}\n`;
         }
         if(gNotes) msg += `\nملاحظات عامة: ${gNotes}`;
-        msg += `\n\nحساب الاصناف: ${total} ج\nمصاريف التوصيل: ${DELIVERY_FEE} ج\nالاجمالي الكلي: ${total + DELIVERY_FEE} ج`;
+        msg += `\n\nحساب الاصناف: ${total} ج\nمصاريف التوصيل: ${area.p} ج\nالاجمالي الكلي: ${total + area.p} ج`;
  
         try { localStorage.setItem('kranch_history_v1', JSON.stringify(cart)); } catch(e) {}
         window.open(`https://wa.me/201150303011?text=${encodeURIComponent(msg)}`, '_blank');
