@@ -105,6 +105,10 @@ button{font-family:inherit;cursor:pointer}
 .cf{position:fixed;z-index:3600;pointer-events:none;width:9px;height:9px;border-radius:2px;animation:cf 1.2s ease-out forwards}
 @keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media(prefers-reduced-motion:reduce){#promo::after,#promo.show .big{animation:none}.cf{display:none}}
+#disc-strip{background:#fff7ed;color:#c2410c;text-align:center;font-weight:900;font-size:.85rem;padding:7px 10px;border-top:1px solid #fdba74}
+#disc-strip.on{background:#dcfce7;color:#15803d;border-top-color:#86efac}
+[data-theme=dark] #disc-strip{background:#3a2515;color:#fdba74;border-top-color:#7c4a1c}
+[data-theme=dark] #disc-strip.on{background:#14532d;color:#bbf7d0;border-top-color:#166534}
 </style></head><body>
  
 <div id="closed-bar">🔒 المطعم مغلق حالياً — الطلب من 12 ظهراً حتى 2 فجراً</div>
@@ -132,7 +136,7 @@ button{font-family:inherit;cursor:pointer}
 <p style="color:var(--sub)">مواعيد الطلب: 12 ظهراً حتى 2 فجراً</p>
 </div>
  
-<div id="cart-bar-container"><div id="cart-summary-items"></div><div id="cart-bar" onclick="openOrder()"><span>🛒 عرض السلة (<span id="cart-count">0</span>)</span><span id="cart-total">0 LE</span></div></div>
+<div id="cart-bar-container"><div id="cart-summary-items"></div><div id="disc-strip" style="display:none"></div><div id="cart-bar" onclick="openOrder()"><span>🛒 عرض السلة (<span id="cart-count">0</span>)</span><span id="cart-total">0 LE</span></div></div>
  
 <div id="order-modal"><div class="om">
 <h2 style="text-align:center;font-weight:900;color:#c2410c;font-size:1.5rem">مراجعة الطلب</h2>
@@ -146,9 +150,10 @@ button{font-family:inherit;cursor:pointer}
 <p id="phone-error" style="display:none;color:#dc2626;font-weight:700;font-size:.85rem">رقم الموبايل غير صحيح</p>
 <div class="tr"><span>حساب الأصناف</span><span><span id="items-total">0</span> LE</span></div>
 <div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 30%</span><span>-<span id="disc-val">0</span> LE</span></div>
+<div class="tr" id="disc-hint" style="color:#ea580c;display:none"></div>
 <div style="text-align:center;font-weight:900;font-size:1.4rem;color:#c2410c;margin:18px 0">المجموع بعد الخصم: <span id="grand-total">0</span> LE</div>
 <button id="btn-send" onclick="sendWA()" style="width:100%;color:#fff;padding:18px;border-radius:12px;font-weight:900;font-size:1.1rem;border:none">تأكيد وإرسال واتساب</button>
-<button onclick="$('order-modal').style.display='none'" style="width:100%;background:none;color:var(--sub);padding:12px;margin-top:8px;border:none;font-weight:700">رجوع للقائمة</button>
+<button onclick="closeOrder()" style="width:100%;background:none;color:var(--sub);padding:12px;margin-top:8px;border:none;font-weight:700">رجوع للقائمة</button>
 </div></div>
  
 <div id="sheet" class="sheet">
@@ -167,7 +172,7 @@ button{font-family:inherit;cursor:pointer}
 <button id="sh-add" class="add-btn" onclick="addProd()">أضف للسلة</button></div>
 </div>
 <div id="install-popup"><div class="ip-card"><button class="ip-x" onclick="closeInstallPopup()" aria-label="إغلاق">✕</button><div class="ip-icon">📲</div><div class="ip-title">نزّل تطبيق Kرانش</div><div class="ip-text">اطلب أسرع وشوف المنيو في أي وقت من شاشة موبايلك الرئيسية، من غير ما تفتح المتصفح.</div><button id="popup-install-btn" class="ip-btn">تنزيل التطبيق</button></div></div>
-<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 30% 🎉</div><div class="sm">على الطلب من التطبيق فقط</div></div>
+<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 30% 🎉</div><div class="sm">على الطلب من التطبيق فقط</div><div class="sm">العروض خارج الخصم - والحد الأدنى للطلب 300 جنيه</div></div>
 <div id="ck-toast"></div>
  
 <script>
@@ -222,7 +227,7 @@ const ITEM_IMG={
  // sandwich
  'sandwich:تشيكن كلاسيك':'31.jpg','sandwich:تشيكن فولكانو':'32.jpg','sandwich:تشيكن رانش':'33.jpg','sandwich:تشيكن ديناميت':'34.jpg','sandwich:تشيكن بيج بوس':'35.jpg','sandwich:تشيكن تشيزي':'36.jpg','sandwich:تشيكن تيستي':'37.jpg','sandwich:تشيكن بولو':'38.jpg','sandwich:تشيكن فاير':'39.jpg','sandwich:تشيكن سوبريم':'40.jpg','sandwich:تشيكن فاهيتا':'41.jpg','sandwich:شيش طاووق':'42.jpg',
  // risotto
- 'risotto:روزيتو كرانشي':'43.jpg','risotto:روزيتو شيش':'44.jpg','risotto:روزيتو فاهيتا':'45.jpg','risotto:سموكي بيف':'46.jpg','risotto:سموكي تشيكن':'47.jpg',
+ 'risotto:روزيتو كرانشي':'43.jpg','risotto:روزيتو شيش':'44.jpg','risotto:روزيتو فاهيتا':'45.jpg','risotto:سموكي بيف':'46.jpg','risotto:سموكي تشيكن':'47.jpg','risotto:ريزو':'116.jpg',
  // tortilla
  'tortilla:كرانشي':'48.jpg','tortilla:شيش':'49.jpg','tortilla:تشيكن':'50.jpg','tortilla:بيف':'51.jpg','tortilla:فاهيتا':'52.jpg','tortilla:بطاطس':'53.jpg',
  // fries
@@ -274,9 +279,10 @@ function addLine(id,name,price,qty,cat,note){showPromo();const k=id+'|'+(note||'
 function sync(){let q=0,t=0,h='';Object.keys(cart).forEach((k,i)=>{const c=cart[k];q+=c.qty;t+=c.qty*c.price;
  h+=`<span class="summary-chip">${c.qty}x ${prefix(c.cat,c.name)}${esc(c.name)}<span class="remove-chip-btn" onclick="event.stopPropagation();rmItem(${i})">✖</span></span>`});
  $('cart-summary-items').innerHTML=h;
+ const sg=$('disc-strip');if(DISC_ON&&q){const e=eligible(),ok=e>=DISC_MIN;sg.style.display='block';sg.classList.toggle('on',ok);sg.innerText=ok?'🎉 تم تفعيل خصم الافتتاح 30%':'🎁 تبقى '+(DISC_MIN-e)+' جنيه على تفعيل خصم الافتتاح 30%'}else sg.style.display='none';
  $('cart-count').innerText=q;$('cart-total').innerText=t+' LE';$('cart-bar-container').style.display=q?'flex':'none'}
 let promoShown=false,promoT=null;
-function showPromo(){if(!DISC_ON||promoShown)return;promoShown=true;$('promo').classList.add('show');setTimeout(burst,280);promoT=setTimeout(hidePromo,5500)}
+function showPromo(){if(!DISC_ON||promoShown)return;promoShown=true;$('promo').classList.add('show');setTimeout(burst,280);promoT=setTimeout(hidePromo,7000)}
 function hidePromo(){clearTimeout(promoT);$('promo').classList.remove('show')}
 function burst(){const cx=innerWidth/2,cy=56,cols=['#fff','#fde047','#fb7185','#34d399','#60a5fa','#f97316'];
  for(let i=0;i<40;i++){const e=document.createElement('i');e.className='cf';e.style.left=cx+'px';e.style.top=cy+'px';e.style.background=cols[i%6];
@@ -302,9 +308,18 @@ function openProd(key,gi){
   ex+=`<div class="ex"><div class="ex-e">${EXE[name]||'➕'}</div><div>${name}</div><div class="ex-c">${vs.map(v=>`<button type="button" class="xchip" data-id="id_addons_${v.idx}" data-name="${v.item.n}" data-price="${v.item.p}" onclick="toggleEx(this)">${v.size?v.size+' ':''}${v.item.p}</button>`).join('')}</div></div>`});
  $('sh-extras-wrap').style.display=ex?'block':'none';$('sh-extras').innerHTML=ex;
  $('sh-note').value='';$('sh-qty').innerText='1';
- $('sheet').classList.add('open');document.body.style.overflow='hidden';
+ $('sheet').classList.add('open');document.body.style.overflow='hidden';if(!OV.includes('sheet'))ovOpen('sheet');
  $('sheet').querySelector('.sheet-body').scrollTop=0;refreshSheet()}
-function closeProd(){$('sheet').classList.remove('open');document.body.style.overflow=''}
+function closeProd(){$('sheet').classList.remove('open');document.body.style.overflow='';ovClosed('sheet')}
+// زرار الرجوع (المثلث) بيقفل الصفحة المفتوحة بدل ما يطلع من التطبيق
+let OV=[],skipPop=0;
+function ovOpen(n){OV.push(n);history.pushState({kr:n},'')}
+function ovClosed(n){const i=OV.lastIndexOf(n);if(i<0)return;OV.splice(i,1);skipPop++;history.back()}
+addEventListener('popstate',()=>{if(skipPop>0){skipPop--;return}
+ const n=OV.pop();
+ if(n==='order')$('order-modal').style.display='none';
+ else if(n==='sheet'){$('sheet').classList.remove('open');document.body.style.overflow=''}});
+function closeOrder(){$('order-modal').style.display='none';ovClosed('order')}
 function toggleEx(b){const was=b.classList.contains('sel');
  b.parentElement.querySelectorAll('.xchip').forEach(c=>c.classList.remove('sel'));if(!was)b.classList.add('sel');refreshSheet()}
 function shQty(d){P.qty=Math.max(1,Math.min(99,P.qty+d));$('sh-qty').innerText=P.qty;refreshSheet()}
@@ -330,12 +345,15 @@ function addProd(){
 // ===== الطلب =====
 // (للتوصيل لما نفعّله) 
 const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',25],['المكتبات',25],['الأربعين',30],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
-const DISC_ON=true,DISC=0.30; // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
-function discount(t){return DISC_ON?Math.round(t*DISC):0}
-function refreshTotals(){const t=cartSum(),d=discount(t);$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';$('grand-total').innerText=t-d}
+const DISC_ON=true,DISC=0.30,DISC_MIN=300,OFFER_CAT='offers'; // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
+function eligible(){let t=0;for(const k in cart)if(cart[k].cat!==OFFER_CAT)t+=cart[k].qty*cart[k].price;return t}
+function discount(){const e=eligible();return(DISC_ON&&e>=DISC_MIN)?Math.round(e*DISC):0}
+function refreshTotals(){const t=cartSum(),d=discount(),e=eligible();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';
+ const h=$('disc-hint');if(DISC_ON&&!d&&t){h.style.display='flex';h.innerText='تبقى '+(DISC_MIN-e)+' جنيه على تفعيل خصم الافتتاح 30% (العروض خارج الخصم)'}else h.style.display='none';
+ $('grand-total').innerText=t-d}
 function openOrder(){
- const ks=Object.keys(cart);if(!ks.length){$('order-modal').style.display='none';return}
- $('order-modal').style.display='block';
+ const ks=Object.keys(cart);if(!ks.length){closeOrder();return}
+ $('order-modal').style.display='block';if(!OV.includes('order'))ovOpen('order');
  $('final-items').innerHTML=ks.map((k,i)=>{const c=cart[k];return`<div class="crow"><div style="flex:1"><div style="font-weight:900">${prefix(c.cat,c.name)}${esc(c.name)}</div><div style="color:#ea580c;font-weight:700;font-size:.9rem">${c.qty*c.price} ج</div>${c.note?`<div style="color:#dc2626;font-size:.85rem;font-weight:700">- ملاحظة: ${esc(c.note)}</div>`:''}</div><div style="display:flex;align-items:center;gap:8px"><button class="cb m" onclick="chg(${i},-1)">-</button><b style="color:#ea580c">${c.qty}</b><button class="cb" onclick="chg(${i},1)">+</button><button class="remove-chip-btn" style="margin-right:8px" onclick="rmItem(${i})">✖</button></div></div>`}).join('');
  refreshTotals();validate()}
 function chg(i,d){const k=Object.keys(cart)[i];cart[k].qty+=d;if(cart[k].qty<=0)delete cart[k];sync();openOrder()}
