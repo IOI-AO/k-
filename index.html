@@ -144,14 +144,22 @@ button{font-family:inherit;cursor:pointer}
 <input type="text" id="user-name" placeholder="الاسم بالكامل" oninput="validate()">
 <input type="tel" id="user-phone" placeholder="رقم الموبايل" maxlength="11" inputmode="numeric" oninput="validate()">
 <div class="sh-h" style="margin:6px 0 8px">طريقة الاستلام</div>
-<div class="ot sel"><span class="rad"></span><div style="flex:1"><div>استلام من الفرع</div><div class="ot-s">📍 أسيوط - ش الأزهر أمام دار المناسبات</div></div></div>
-<div class="ot dis"><span class="rad"></span><span>توصيل (قريباً)</span></div>
+<div id="ot-cur" class="ot sel" onclick="toggleOT()"><span class="rad"></span><div style="flex:1"><div id="ot-cur-t">توصيل 🛵</div><div class="ot-s" id="ot-cur-s">اضغط لو عايز تغيّر الطريقة</div></div><span>▾</span></div>
+<div id="ot-list" style="display:none">
+<div id="ot-del" class="ot sel" onclick="setOT('del')"><span class="rad"></span><div style="flex:1"><div>توصيل 🛵</div></div></div>
+<div id="ot-pick" class="ot" onclick="setOT('pick')"><span class="rad"></span><div style="flex:1"><div>استلام من الفرع</div><div class="ot-s">📍 أسيوط - ش الأزهر أمام دار المناسبات</div></div></div>
+</div>
+<div id="del-fields">
+<select id="user-area" onchange="refreshTotals();validate()"><option value="" disabled selected>اختر المنطقة</option></select>
+<textarea id="user-addr" placeholder="العنوان بالتفصيل" style="height:80px;border:2px solid #f97316" oninput="validate()"></textarea>
+</div>
 <textarea id="order-notes" placeholder="ملاحظات عامة على الطلب (اختياري)..." style="height:60px"></textarea>
 <p id="phone-error" style="display:none;color:#dc2626;font-weight:700;font-size:.85rem">رقم الموبايل غير صحيح</p>
 <div class="tr"><span>حساب الأصناف</span><span><span id="items-total">0</span> LE</span></div>
 <div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 30%</span><span>-<span id="disc-val">0</span> LE</span></div>
 <div class="tr" id="disc-hint" style="color:#ea580c;display:none"></div>
-<div style="text-align:center;font-weight:900;font-size:1.4rem;color:#c2410c;margin:18px 0">المجموع بعد الخصم: <span id="grand-total">0</span> LE</div>
+<div class="tr" id="fee-row"><span>مصاريف التوصيل 🛵</span><span id="delivery-fee">—</span></div>
+<div style="text-align:center;font-weight:900;font-size:1.4rem;color:#c2410c;margin:18px 0"><span id="grand-label">الإجمالي الكلي</span>: <span id="grand-total">0</span> LE</div>
 <button id="btn-send" onclick="sendWA()" style="width:100%;color:#fff;padding:18px;border-radius:12px;font-weight:900;font-size:1.1rem;border:none">تأكيد وإرسال واتساب</button>
 <button onclick="closeOrder()" style="width:100%;background:none;color:var(--sub);padding:12px;margin-top:8px;border:none;font-weight:700">رجوع للقائمة</button>
 </div></div>
@@ -345,12 +353,24 @@ function addProd(){
 // ===== الطلب =====
 // (للتوصيل لما نفعّله) 
 const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',25],['المكتبات',25],['الأربعين',30],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
+AREAS.forEach((a,i)=>{const o=document.createElement('option');o.value=i;o.textContent=a[0];$('user-area').appendChild(o)});
+const area=()=>{const v=$('user-area').value;return v===''?null:AREAS[+v]};
+let OT='del'; // del = توصيل (الأساسي) | pick = استلام من الفرع
+const fee=()=>{const a=area();return OT==='del'&&a?a[1]:0};
+function toggleOT(){$('ot-cur').style.display='none';$('ot-list').style.display='block'}
+function setOT(t){OT=t;$('ot-list').style.display='none';$('ot-cur').style.display='flex';
+ $('ot-cur-t').innerText=t==='del'?'توصيل 🛵':'استلام من الفرع';
+ $('ot-cur-s').innerText=t==='del'?'اضغط لو عايز تغيّر الطريقة':'📍 أسيوط - ش الأزهر أمام دار المناسبات';
+ $('del-fields').style.display=t==='del'?'block':'none';
+ $('ot-del').classList.toggle('sel',t==='del');$('ot-pick').classList.toggle('sel',t==='pick');
+ refreshTotals();validate()}
 const DISC_ON=true,DISC=0.30,DISC_MIN=300,OFFER_CAT='offers'; // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
 function eligible(){let t=0;for(const k in cart)if(cart[k].cat!==OFFER_CAT)t+=cart[k].qty*cart[k].price;return t}
 function discount(){const e=eligible();return(DISC_ON&&e>=DISC_MIN)?Math.round(e*DISC):0}
 function refreshTotals(){const t=cartSum(),d=discount(),e=eligible();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';
  const h=$('disc-hint');if(DISC_ON&&!d&&t){h.style.display='flex';h.innerText='تبقى '+(DISC_MIN-e)+' جنيه على تفعيل خصم الافتتاح 30% (العروض خارج الخصم)'}else h.style.display='none';
- $('grand-total').innerText=t-d}
+ const dl=OT==='del',a=area();$('fee-row').style.display=dl?'flex':'none';$('delivery-fee').innerText=a?a[1]+' LE':'—';
+ $('grand-label').innerText=dl?'الإجمالي الكلي':'المجموع بعد الخصم';$('grand-total').innerText=t-d+fee()}
 function openOrder(){
  const ks=Object.keys(cart);if(!ks.length){closeOrder();return}
  $('order-modal').style.display='block';if(!OV.includes('order'))ovOpen('order');
@@ -362,17 +382,17 @@ function validate(){
  if(pe.value!==ph)pe.value=ph;
  const pok=/^01[0125][0-9]{8}$/.test(ph);
  $('phone-error').style.display=(ph&&!pok)?'block':'none';
- const open=isOpen(),ok=open&&navigator.onLine&&pok&&$('user-name').value.trim()!=='';
+ const open=isOpen(),ok=open&&navigator.onLine&&pok&&$('user-name').value.trim()!==''&&(OT==='pick'||(area()!==null&&$('user-addr').value.trim()!==''));
  const b=$('btn-send');b.disabled=!ok;b.style.background=ok?'#16a34a':'#9ca3af';
  b.innerText=open?'تأكيد وإرسال واتساب':'المطعم مغلق حالياً';return ok}
 function sendWA(){
  if(!isOpen()){alert('المطعم مغلق حالياً - الطلب من 12 ظهراً حتى 2 فجراً');return}
  if(!navigator.onLine){alert('مفيش إنترنت - الطلب محتاج إنترنت');return}
  if(!validate())return;
- let msg=`طلب جديد\nالاسم: ${$('user-name').value.trim()}\nالموبايل: ${$('user-phone').value}\nطريقة الاستلام: استلام من الفرع\n\nالاصناف:\n`,t=0;
+ let msg=`طلب جديد\nالاسم: ${$('user-name').value.trim()}\nالموبايل: ${$('user-phone').value}\n${OT==='del'?`طريقة الاستلام: توصيل\nالمنطقة: ${area()[0]}\nالعنوان: ${$('user-addr').value.trim()}`:'طريقة الاستلام: استلام من الفرع'}\n\nالاصناف:\n`,t=0;
  for(const k in cart){const c=cart[k],p=c.qty*c.price;t+=p;msg+=`\nالصنف: ${prefix(c.cat,c.name)}${c.name}\nالعدد: ${c.qty}\nالاجمالي: ${p} جنيه\n`;if(c.note)msg+=`ملاحظة: ${c.note}\n`}
  const g=$('order-notes').value.trim();if(g)msg+=`\nملاحظات عامة: ${g}`;
- const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(d?`\nخصم الافتتاح (30 بالمائة): ${d} جنيه`:'')+`\nالسعر النهائي: ${t-d} جنيه`;
+ const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(d?`\nخصم الافتتاح (30 بالمائة): ${d} جنيه`:'')+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
  try{localStorage.setItem('kranch_history_v2',JSON.stringify(Object.values(cart).map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty,cat:c.cat}))))}catch(e){}
  window.open(`https://wa.me/201150303011?text=${encodeURIComponent(msg)}`,'_blank')}
  
@@ -459,5 +479,5 @@ async function doInstall(){
 $('install-btn').addEventListener('click',doInstall);$('popup-install-btn').addEventListener('click',doInstall);
 if(isIOS)showInstallBanner();
  
-init();upd();
+setOT('del');init();upd();
 </script></body></html>

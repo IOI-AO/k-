@@ -1,5 +1,5 @@
 // غيّر رقم النسخة كل ما تعدّل في المنيو عشان الموبايلات تاخد التحديث
-const VERSION = 'kranch-v4';
+const VERSION = 'kranch-v5';
 const CORE = [
   './', './index.html', './manifest.json', './117287.jpg', './117290.jpg'
 ];
