@@ -385,7 +385,7 @@ function sendWA(){
  let msg=`طلب جديد\nالاسم: ${$('user-name').value.trim()}\nالموبايل: ${$('user-phone').value}\n${OT==='del'?`طريقة الاستلام: توصيل\nالمنطقة: ${area()[0]}\nالعنوان: ${$('user-addr').value.trim()}`:'طريقة الاستلام: استلام من الفرع'}\n\nالاصناف:\n`,t=0;
  for(const k in cart){const c=cart[k],p=c.qty*c.price;t+=p;msg+=`\nالصنف: ${prefix(c.cat,c.name)}${c.name}\nالعدد: ${c.qty}\nالاجمالي: ${p} جنيه\n`;if(c.note)msg+=`ملاحظة: ${c.note}\n`}
  const g=$('order-notes').value.trim();if(g)msg+=`\nملاحظات عامة: ${g}`;
- const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(d?`\nخصم الافتتاح (15 بالمائة): ${d} جنيه`:'')+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
+ const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+(d?`\nخصم الافتتاح (15 بالمائة): ${d} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
  try{localStorage.setItem('kranch_history_v2',JSON.stringify(Object.values(cart).map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty,cat:c.cat}))))}catch(e){}
  window.open(`https://wa.me/201150303011?text=${encodeURIComponent(msg)}`,'_blank')}
  
