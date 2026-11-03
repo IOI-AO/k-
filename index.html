@@ -105,10 +105,6 @@ button{font-family:inherit;cursor:pointer}
 .cf{position:fixed;z-index:3600;pointer-events:none;width:9px;height:9px;border-radius:2px;animation:cf 1.2s ease-out forwards}
 @keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media(prefers-reduced-motion:reduce){#promo::after,#promo.show .big{animation:none}.cf{display:none}}
-#disc-strip{background:#fff7ed;color:#c2410c;text-align:center;font-weight:900;font-size:.85rem;padding:7px 10px;border-top:1px solid #fdba74}
-#disc-strip.on{background:#dcfce7;color:#15803d;border-top-color:#86efac}
-[data-theme=dark] #disc-strip{background:#3a2515;color:#fdba74;border-top-color:#7c4a1c}
-[data-theme=dark] #disc-strip.on{background:#14532d;color:#bbf7d0;border-top-color:#166534}
 </style></head><body>
  
 <div id="closed-bar">🔒 المطعم مغلق حالياً — الطلب من 12 ظهراً حتى 2 فجراً</div>
@@ -136,7 +132,7 @@ button{font-family:inherit;cursor:pointer}
 <p style="color:var(--sub)">مواعيد الطلب: 12 ظهراً حتى 2 فجراً</p>
 </div>
  
-<div id="cart-bar-container"><div id="cart-summary-items"></div><div id="disc-strip" style="display:none"></div><div id="cart-bar" onclick="openOrder()"><span>🛒 عرض السلة (<span id="cart-count">0</span>)</span><span id="cart-total">0 LE</span></div></div>
+<div id="cart-bar-container"><div id="cart-summary-items"></div><div id="cart-bar" onclick="openOrder()"><span>🛒 عرض السلة (<span id="cart-count">0</span>)</span><span id="cart-total">0 LE</span></div></div>
  
 <div id="order-modal"><div class="om">
 <h2 style="text-align:center;font-weight:900;color:#c2410c;font-size:1.5rem">مراجعة الطلب</h2>
@@ -156,8 +152,7 @@ button{font-family:inherit;cursor:pointer}
 <textarea id="order-notes" placeholder="ملاحظات عامة على الطلب (اختياري)..." style="height:60px"></textarea>
 <p id="phone-error" style="display:none;color:#dc2626;font-weight:700;font-size:.85rem">رقم الموبايل غير صحيح</p>
 <div class="tr"><span>حساب الأصناف</span><span><span id="items-total">0</span> LE</span></div>
-<div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 30%</span><span>-<span id="disc-val">0</span> LE</span></div>
-<div class="tr" id="disc-hint" style="color:#ea580c;display:none"></div>
+<div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 15%</span><span>-<span id="disc-val">0</span> LE</span></div>
 <div class="tr" id="fee-row"><span>مصاريف التوصيل 🛵</span><span id="delivery-fee">—</span></div>
 <div style="text-align:center;font-weight:900;font-size:1.4rem;color:#c2410c;margin:18px 0"><span id="grand-label">الإجمالي الكلي</span>: <span id="grand-total">0</span> LE</div>
 <button id="btn-send" onclick="sendWA()" style="width:100%;color:#fff;padding:18px;border-radius:12px;font-weight:900;font-size:1.1rem;border:none">تأكيد وإرسال واتساب</button>
@@ -180,7 +175,7 @@ button{font-family:inherit;cursor:pointer}
 <button id="sh-add" class="add-btn" onclick="addProd()">أضف للسلة</button></div>
 </div>
 <div id="install-popup"><div class="ip-card"><button class="ip-x" onclick="closeInstallPopup()" aria-label="إغلاق">✕</button><div class="ip-icon">📲</div><div class="ip-title">نزّل تطبيق Kرانش</div><div class="ip-text">اطلب أسرع وشوف المنيو في أي وقت من شاشة موبايلك الرئيسية، من غير ما تفتح المتصفح.</div><button id="popup-install-btn" class="ip-btn">تنزيل التطبيق</button></div></div>
-<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 30% 🎉</div><div class="sm">على الطلب من التطبيق فقط</div><div class="sm">العروض خارج الخصم - والحد الأدنى للطلب 300 جنيه</div></div>
+<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 15% 🎉</div><div class="sm">على الطلب من التطبيق فقط</div><div class="sm">العروض خارج الخصم</div></div>
 <div id="ck-toast"></div>
  
 <script>
@@ -275,7 +270,7 @@ function emojiFor(key,n){
  return CE[key]||'🍽️'}
 // الإيموجي دايماً ظاهر، ولو الصورة اتحملت بتظهر فوقه، ولو فشلت أو اتأخرت يفضل الإيموجي
 function thumb(key,base,cls){const src=ITEM_IMG[key+':'+base];
- return`<div class="${cls} img-fallback">${emojiFor(key,base)}${src?`<img src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()">`:''}</div>`}
+ return`<div class="${cls} img-fallback">${emojiFor(key,base)}${src?`<img data-s="${src}" alt="" referrerpolicy="no-referrer">`:''}</div>`}
 function prodRow(key,g,gi){const base=g.single?g.item.n:g.base;
  const price=g.single?g.item.p:Math.min(...g.variants.map(v=>v.item.p));
  return`<div class="prod" onclick="openProd('${key}',${gi})"><div class="prod-txt"><div class="prod-name">${base}</div><div class="prod-price">${g.single?'':'يبدأ من '}${price} LE</div></div>${thumb(key,base,'thumb')}<span class="plus">+</span></div>`}
@@ -287,7 +282,6 @@ function addLine(id,name,price,qty,cat,note){showPromo();const k=id+'|'+(note||'
 function sync(){let q=0,t=0,h='';Object.keys(cart).forEach((k,i)=>{const c=cart[k];q+=c.qty;t+=c.qty*c.price;
  h+=`<span class="summary-chip">${c.qty}x ${prefix(c.cat,c.name)}${esc(c.name)}<span class="remove-chip-btn" onclick="event.stopPropagation();rmItem(${i})">✖</span></span>`});
  $('cart-summary-items').innerHTML=h;
- const sg=$('disc-strip');if(DISC_ON&&q){const e=eligible(),ok=e>=DISC_MIN;sg.style.display='block';sg.classList.toggle('on',ok);sg.innerText=ok?'🎉 تم تفعيل خصم الافتتاح 30%':'🎁 تبقى '+(DISC_MIN-e)+' جنيه على تفعيل خصم الافتتاح 30%'}else sg.style.display='none';
  $('cart-count').innerText=q;$('cart-total').innerText=t+' LE';$('cart-bar-container').style.display=q?'flex':'none'}
 let promoShown=false,promoT=null;
 function showPromo(){if(!DISC_ON||promoShown)return;promoShown=true;$('promo').classList.add('show');setTimeout(burst,280);promoT=setTimeout(hidePromo,7000)}
@@ -306,7 +300,7 @@ function stuffPrice(){return P&&P.key==='pizza'&&P.sel>=0?(STUFF[P.g.variants[P.
 function openProd(key,gi){
  const g=G[key][gi],base=g.single?g.item.n:g.base;
  P={key,g,sel:g.single?0:(g.variants.length==1?0:-1),qty:1,stuff:false};
- $('sh-hero').innerHTML=thumb(key,base,'sh-img');$('sh-name').innerText=base;
+ $('sh-hero').innerHTML=thumb(key,base,'sh-img');{const im=$('sh-hero').querySelector('img[data-s]');if(im){im.fetchPriority='high';imgGo(im)}}$('sh-name').innerText=base;
  $('sh-desc').innerText=g.single&&g.item.d?'يشمل: '+g.item.d:'';
  $('sh-sizes-wrap').style.display=g.single?'none':'block';
  $('sh-sizes').innerHTML=g.single?'':g.variants.map((v,i)=>`<div class="opt" onclick="P.sel=${i};refreshSheet()"><span class="rad"></span><span>${v.size}</span><span class="opt-p">${v.item.p} LE</span></div>`).join('');
@@ -352,7 +346,7 @@ function addProd(){
  
 // ===== الطلب =====
 // (للتوصيل لما نفعّله) 
-const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',25],['المكتبات',25],['الأربعين',30],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
+const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',25],['المكتبات',25],['الأربعين',35],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
 AREAS.forEach((a,i)=>{const o=document.createElement('option');o.value=i;o.textContent=a[0];$('user-area').appendChild(o)});
 const area=()=>{const v=$('user-area').value;return v===''?null:AREAS[+v]};
 let OT='del'; // del = توصيل (الأساسي) | pick = استلام من الفرع
@@ -364,11 +358,10 @@ function setOT(t){OT=t;$('ot-list').style.display='none';$('ot-cur').style.displ
  $('del-fields').style.display=t==='del'?'block':'none';
  $('ot-del').classList.toggle('sel',t==='del');$('ot-pick').classList.toggle('sel',t==='pick');
  refreshTotals();validate()}
-const DISC_ON=true,DISC=0.30,DISC_MIN=300,OFFER_CAT='offers'; // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
+const DISC_ON=true,DISC=0.15,DISC_DELIVERY=true,OFFER_CAT='offers'; // DISC_DELIVERY: الخصم يشمل مصاريف التوصيل (false = على الأصناف بس) // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
 function eligible(){let t=0;for(const k in cart)if(cart[k].cat!==OFFER_CAT)t+=cart[k].qty*cart[k].price;return t}
-function discount(){const e=eligible();return(DISC_ON&&e>=DISC_MIN)?Math.round(e*DISC):0}
-function refreshTotals(){const t=cartSum(),d=discount(),e=eligible();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';
- const h=$('disc-hint');if(DISC_ON&&!d&&t){h.style.display='flex';h.innerText='تبقى '+(DISC_MIN-e)+' جنيه على تفعيل خصم الافتتاح 30% (العروض خارج الخصم)'}else h.style.display='none';
+function discount(){const e=eligible();if(!DISC_ON||!e)return 0;return Math.round((e+(DISC_DELIVERY?fee():0))*DISC)}
+function refreshTotals(){const t=cartSum(),d=discount();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';
  const dl=OT==='del',a=area();$('fee-row').style.display=dl?'flex':'none';$('delivery-fee').innerText=a?a[1]+' LE':'—';
  $('grand-label').innerText=dl?'الإجمالي الكلي':'المجموع بعد الخصم';$('grand-total').innerText=t-d+fee()}
 function openOrder(){
@@ -392,7 +385,7 @@ function sendWA(){
  let msg=`طلب جديد\nالاسم: ${$('user-name').value.trim()}\nالموبايل: ${$('user-phone').value}\n${OT==='del'?`طريقة الاستلام: توصيل\nالمنطقة: ${area()[0]}\nالعنوان: ${$('user-addr').value.trim()}`:'طريقة الاستلام: استلام من الفرع'}\n\nالاصناف:\n`,t=0;
  for(const k in cart){const c=cart[k],p=c.qty*c.price;t+=p;msg+=`\nالصنف: ${prefix(c.cat,c.name)}${c.name}\nالعدد: ${c.qty}\nالاجمالي: ${p} جنيه\n`;if(c.note)msg+=`ملاحظة: ${c.note}\n`}
  const g=$('order-notes').value.trim();if(g)msg+=`\nملاحظات عامة: ${g}`;
- const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(d?`\nخصم الافتتاح (30 بالمائة): ${d} جنيه`:'')+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
+ const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(d?`\nخصم الافتتاح (15 بالمائة): ${d} جنيه`:'')+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
  try{localStorage.setItem('kranch_history_v2',JSON.stringify(Object.values(cart).map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty,cat:c.cat}))))}catch(e){}
  window.open(`https://wa.me/201150303011?text=${encodeURIComponent(msg)}`,'_blank')}
  
@@ -428,7 +421,7 @@ function doSearch(){
   return(res.length&&res[0].score>=1000)?res.filter(r=>r.score>=1000):res};
  let res=collect(true),note='';
  if(!res.length){res=collect(false);if(res.length)note='<p style="text-align:center;font-weight:700;color:var(--sub);padding:6px 0 10px">مفيش تطابق كامل، دي أقرب نتايج:</p>'}
- $('search-list').innerHTML=res.length?note+res.map(r=>r.html).join(''):'<p style="text-align:center;font-weight:700;color:var(--sub);padding:15px 0">مفيش نتائج بالاسم ده</p>'}
+ $('search-list').innerHTML=res.length?note+res.map(r=>r.html).join(''):'<p style="text-align:center;font-weight:700;color:var(--sub);padding:15px 0">مفيش نتائج بالاسم ده</p>';imgQueue($('search-list'),true)}
 function exitSearch(){$('live-search').value='';$('search-box').style.display='none';$('clear-btn').style.display='none';
  $('sections').style.display='';$('main-nav').style.display='flex';loadReorder()}
  
@@ -441,6 +434,20 @@ function loadReorder(){let last=null;try{last=JSON.parse(localStorage.getItem('k
 function reAdd(i){if(!isOpen()){toast('المطعم مغلق حالياً');return}
  const c=HIST[i],list=menu[c.cat]||[],ix=list.findIndex(x=>x.n===c.name);
  addLine(ix>=0?`id_${c.cat}_${ix}`:c.id,c.name,ix>=0?list[ix].p:c.price,1,c.cat,'');toast('تمت الإضافة للسلة ✅')}
+ 
+// ===== تحميل الصور: كلها بتتحمل من أول الصفحة لآخرها، والأولوية للي العميل رايحله =====
+const IQ=[],IMAX=6;let IA=0;
+function imgGo(im){const u=im.dataset.s;if(!u)return;delete im.dataset.s;IA++;
+ const done=()=>{IA--;imgPump()};
+ im.addEventListener('load',()=>{im.classList.add('ok');done()},{once:true});
+ im.addEventListener('error',()=>{im.remove();done()},{once:true});
+ im.src=u}
+function imgPump(){while(IA<IMAX&&IQ.length){const im=IQ.shift();if(im.isConnected&&im.dataset.s)imgGo(im)}}
+const imgIO='IntersectionObserver'in window?new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const im=e.target;imgIO.unobserve(im);if(im.dataset.s){IQ.unshift(im);imgPump()}})},{rootMargin:'500px'}):null;
+function imgQueue(root,front){const l=[...root.querySelectorAll('img[data-s]')];if(imgIO)l.forEach(im=>imgIO.observe(im));if(front)IQ.unshift(...l);else IQ.push(...l);imgPump()}
+function startImgs(){const all=[...document.querySelectorAll('#sections img[data-s]')];if(imgIO)all.forEach(im=>imgIO.observe(im));
+ const go=()=>{IQ.push(...all);imgPump()};document.readyState==='complete'?go():addEventListener('load',go)}
+// ===== نهاية تحميل الصور =====
  
 // ===== واجهة =====
 function init(){
@@ -479,5 +486,5 @@ async function doInstall(){
 $('install-btn').addEventListener('click',doInstall);$('popup-install-btn').addEventListener('click',doInstall);
 if(isIOS)showInstallBanner();
  
-setOT('del');init();upd();
+setOT('del');init();startImgs();upd();
 </script></body></html>
