@@ -1,4 +1,5 @@
 {
+  "id": "./index.html",
   "name": "Kرانش",
   "short_name": "Kرانش",
   "description": "منيو مطعم Kرانش - أسيوط",
@@ -8,7 +9,7 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
+  "background_color": "#f97316",
   "theme_color": "#f97316",
   "icons": [
     {
