@@ -1,5 +1,5 @@
  // غيّر VERSION لما تعدّل sw.js أو الأيقونات أو صورة 117287.jpg. المنيو نفسه (index.html) بيتحدّث لوحده من النت.
-const VERSION = 'kranch-v8';
+const VERSION = 'kranch-v9';
 // صور الأصناف والخطوط: بتفضل متخزنة ومش بتتمسح لما VERSION يتغيّر.
 // لو غيّرت صورة صنف بنفس الاسم، غيّر الرقم هنا (kranch-assets-v2) أو سمّيها باسم جديد.
 const ASSETS = 'kranch-assets-v1';
