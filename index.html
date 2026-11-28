@@ -105,6 +105,12 @@ button{font-family:inherit;cursor:pointer}
 .cf{position:fixed;z-index:3600;pointer-events:none;width:9px;height:9px;border-radius:2px;animation:cf 1.2s ease-out forwards}
 @keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media(prefers-reduced-motion:reduce){#promo::after,#promo.show .big{animation:none}.cf{display:none}}
+.newb{display:inline-block;margin-right:6px;padding:1px 9px;border-radius:20px;background:#dc2626;color:#fff;font-size:.7rem;font-weight:900;vertical-align:middle;animation:nbp 1.3s ease-in-out infinite}
+@keyframes nbp{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,38,38,.55)}50%{transform:scale(1.12);box-shadow:0 0 0 7px rgba(220,38,38,0)}}
+.nl.hot{border-color:#dc2626;animation:nlp 1.4s ease-in-out infinite}
+@keyframes nlp{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.6)}50%{box-shadow:0 0 0 8px rgba(249,115,22,0)}}
+.snote.hot{color:#ea580c;font-size:1rem;font-weight:900}
+@media(prefers-reduced-motion:reduce){.newb,.nl.hot{animation:none}}
 </style></head><body>
  
 <div id="closed-bar">🔒 المطعم مغلق حالياً — الطلب من 12 ظهراً حتى 2 فجراً</div>
@@ -152,7 +158,8 @@ button{font-family:inherit;cursor:pointer}
 <textarea id="order-notes" placeholder="ملاحظات عامة على الطلب (اختياري)..." style="height:60px"></textarea>
 <p id="phone-error" style="display:none;color:#dc2626;font-weight:700;font-size:.85rem">رقم الموبايل غير صحيح</p>
 <div class="tr"><span>حساب الأصناف</span><span><span id="items-total">0</span> LE</span></div>
-<div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 15%</span><span>-<span id="disc-val">0</span> LE</span></div>
+<div class="tr" id="disc-row" style="color:#ea580c"><span>🎉 خصم الافتتاح 10%</span><span>-<span id="disc-val">0</span> LE</span></div>
+<div class="tr" id="disc-hint" style="display:none;color:#ea580c;font-weight:900"><span id="disc-hint-t"></span></div>
 <div class="tr" id="fee-row"><span>مصاريف التوصيل 🛵</span><span id="delivery-fee">—</span></div>
 <div style="text-align:center;font-weight:900;font-size:1.4rem;color:#c2410c;margin:18px 0"><span id="grand-label">الإجمالي الكلي</span>: <span id="grand-total">0</span> LE</div>
 <button id="btn-send" onclick="sendWA()" style="width:100%;color:#fff;padding:18px;border-radius:12px;font-weight:900;font-size:1.1rem;border:none">تأكيد وإرسال واتساب</button>
@@ -165,7 +172,6 @@ button{font-family:inherit;cursor:pointer}
 <h2 id="sh-name" class="sh-name"></h2>
 <p id="sh-desc" style="color:var(--sub);font-weight:700;margin-top:4px"></p>
 <div id="sh-sizes-wrap"><div class="sh-h">اختر المقاس <span class="req">مطلوب</span></div><div id="sh-sizes"></div></div>
-<div id="sh-stuff-wrap" style="display:none"><div class="sh-h">حشو أطراف 🧀</div><div id="sh-stuff" class="opt" onclick="P.stuff=!P.stuff;refreshSheet()"><span class="rad"></span><span>أضف حشو أطراف</span><span class="opt-p" id="sh-stuff-p"></span></div></div>
 <div id="sh-extras-wrap" class="sh-ex"><div class="sh-h">تُطلب معها عادةً</div><div id="sh-extras"></div></div>
 <div class="sh-h">ملاحظات على الصنف</div>
 <textarea id="sh-note" class="note-input" style="height:70px;resize:none" placeholder="مثال: بدون بصل..."></textarea>
@@ -175,7 +181,7 @@ button{font-family:inherit;cursor:pointer}
 <button id="sh-add" class="add-btn" onclick="addProd()">أضف للسلة</button></div>
 </div>
 <div id="install-popup"><div class="ip-card"><button class="ip-x" onclick="closeInstallPopup()" aria-label="إغلاق">✕</button><div class="ip-icon">📲</div><div class="ip-title">نزّل تطبيق Kرانش</div><div class="ip-text">اطلب أسرع وشوف المنيو في أي وقت من شاشة موبايلك الرئيسية، من غير ما تفتح المتصفح.</div><button id="popup-install-btn" class="ip-btn">تنزيل التطبيق</button></div></div>
-<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 15% 🎉</div><div class="sm">على الطلب من التطبيق فقط</div><div class="sm">العروض خارج الخصم</div></div>
+<div id="promo" onclick="hidePromo()"><div class="big">🎉 خصم الافتتاح 10% 🎉</div><div class="sm">على الطلبات من 200 جنيه فأكثر</div><div class="sm">عروض الـ 150 ج خارج الخصم</div></div>
 <div id="ck-toast"></div>
  
 <script>
@@ -188,65 +194,64 @@ function isOpen(){let h;try{h=+new Intl.DateTimeFormat('en-GB',{timeZone:'Africa
  
 // ===== المنيو =====
 const CATS=[
-['offers','🔥','العروض','#fecaca,#ef4444'],['kart','🥡','خرطوشة','#fbcfe8,#db2777'],
+['offers','🔥','عروض الـ 150 ج','#fecaca,#ef4444'],['kart','🥡','خرطوشة','#fbcfe8,#db2777'],
 ['pizza','🍕','البيتزا','#fdba74,#f97316'],['pasta','🍝','الباستا','#fecaca,#dc2626'],
-['meals','🍗','الوجبات','#fcd9a8,#f59e0b'],['sandwich','🥪','الساندويتش','#fde68a,#d97706'],
-['crepe','🌯','الكريب','#fde68a,#f59e0b'],['risotto','🍚','الروزيتو','#bbf7d0,#16a34a'],
-['tortilla','🌮','التورتيلا','#fed7aa,#ea580c'],['fries','🍟','البطاطس','#fef08a,#eab308'],
-['kids','🧒','وجبات الأطفال','#bae6fd,#0ea5e9'],['addons','➕','كومبو وإضافات','#e9d5ff,#9333ea'],
-['drinks','🥤','المشروبات','#a5f3fc,#0891b2']];
-const NOTE={pizza:'حشو أطراف: +30 للوسط / +40 للكبير',meals:'جميع الوجبات تحتوي على: ارز - كول سلو - ثومية - عيش',kids:'وجبات الأطفال: بطاطس + عصير + خبز'};
-const PRE={pizza:'بيتزا ',crepe:'كريب ',meals:'وجبة ',kids:'وجبة أطفال ',sandwich:'ساندويتش ',pasta:'مكرونة ',risotto:'روزيتو ',tortilla:'تورتيلا ',addons:'إضافة '};
-const STUFF={'وسط':30,'كبير':40};
+['meals','🍗','الوجبات','#fcd9a8,#f59e0b'],['grill','🍖','وجبات مشوي','#fecaca,#b91c1c'],
+['sandwich','🥪','الساندويتش','#fde68a,#d97706'],['crepe','🌯','الكريب','#fde68a,#f59e0b'],
+['risotto','🍚','فتة','#bbf7d0,#16a34a'],['tortilla','🌮','ملفوف','#fed7aa,#ea580c'],
+['fries','🍟','البطاطس','#fef08a,#eab308'],['kids','🧒','وجبات الأطفال','#bae6fd,#0ea5e9'],
+['addons','➕','كومبو وإضافات','#e9d5ff,#9333ea']];
+const NOTE={offers:'هتاكل من عند Kرانش بـ 150 جنيه بس! 🔥',meals:'جميع الوجبات تحتوي على: ارز - كول سلو - ثومية - عيش',kids:'وجبات الأطفال: بطاطس + عصير + خبز'};
+const PRE={pizza:'بيتزا ',crepe:'كريب ',meals:'وجبة ',grill:'مشوي ',kids:'وجبة أطفال ',sandwich:'ساندويتش ',pasta:'مكرونة ',risotto:'فتة ',tortilla:'ملفوف ',addons:'إضافة '};
 const M=(a,d)=>a.map(([n,p])=>({n,p,d}));
 const MK=a=>a.flatMap(([n,m,l])=>[{n:n+' (وسط)',p:m},{n:n+' (كبير)',p:l}]);
-const pz=[['مارجريتا',75,95,120],['خضروات',80,100,125],['تشيكن سوبريم',95,130,175],['تشيكن رانش',105,140,185],['تشيكن باربيكيو',105,140,185],['تشيكن شيش',105,140,185],['تشيكن فاير',110,150,190],['تشيكن بافالو',110,150,190],['كرانش سوبريم',100,130,180],['كرانش رانش',110,140,190],['كرانش باربيكيو',110,140,190],['كرانش ديناميت',115,150,195],['كرانش بيبروني',120,150,195],['4 سيزون تشيز',110,150,195],['سموكي بيف',100,130,180],['هوت سجق',100,130,175],['بيبروني',95,120,170],['سوبر سوبريم',110,150,190],['كيري بسطرمة',105,140,180],['تونة',100,130,180]];
-const sw=[['تشيكن كلاسيك',90,120],['تشيكن فولكانو',90,120],['تشيكن رانش',100,130],['تشيكن ديناميت',100,130],['تشيكن بيج بوس',100,130],['تشيكن تشيزي',105,140],['تشيكن تيستي',105,140],['تشيكن بولو',130],['تشيكن فاير',120],['تشيكن سوبريم',120],['تشيكن فاهيتا',100],['شيش طاووق',100]];
+const pz=[['مارجريتا',75,95,120],['خضروات',80,100,125],['تشيكن سوبريم',95,130,175],['تشيكن رانش',105,140,185],['تشيكن باربيكيو',105,140,185],['تشيكن فاير',110,150,190],['تشيكن سموكي',110,150,190],['كرانش رانش',110,140,190],['كرانش باربيكيو',110,140,190],['كرانش ديناميت',115,150,195],['4 سيزون تشيز',110,150,195],['سموكي بيف',100,130,180],['بيبروني',95,120,170],['ميكس بيف',110,150,190],['كيري بسطرمة',105,140,180],['تونة',100,130,180]];
+const sw=[['تشيكن كلاسيك',90,120],['تشيكن فولكانو',90,120],['تشيكن رانش',100,130],['تشيكن ديناميت',100,130],['تشيكن بيج بوس',100,130],['تشيكن تشيزي',105,140],['تشيكن تيستي',105,140],['تشيكن كوردن فاير',120],['شيش طاووق',100]];
 const menu={
 pizza:pz.flatMap(([n,s,m,l])=>[{n:n+' (صغير)',p:s},{n:n+' (وسط)',p:m},{n:n+' (كبير)',p:l}]),
-offers:[{n:'2 كلاسيك سينجل',p:200,d:'2 سنجل + 2 بطاطس + 2 أكشن'},{n:'2 كلاسيك دبل',p:260,d:'2 دبل + 2 بطاطس + 2 أكشن'}],
-meals:M([['2 تشيكن فرايد',140],['3 تشيكن فرايد',180],['3 تشيكن كرانش',140],['5 تشيكن كرانش',180],['8 تشيكن كرانش',250],['2 تشيكن اسكالوب',140],['3 تشيكن اسكالوب',180],['4 تشيكن اسكالوب',250],['2 شيش طاووق',150],['3 شيش طاووق',200],['4 شيش طاووق',250],['2 تشيكن كوردن',220],['3 تشيكن كوردن',330],['بيكاتا شامنيون',250],['اسكالوب تشيز',250],['Mix شخص',150],['Mix شخصين',250]],'ارز - كول سلو - ثومية - عيش'),
+offers:M([['فتة + ملفوف شاورما',150],['2 فتة دجاج',150],['ساندوتش شيش + ساندوتش كلاسيك',150],['نجريسكو + كريب شاورما',150],['2 كريب شاورما فراخ',150],['2 نجريسكو',150],['2 ملفوف شاورما',150],['2 بيتزا شاورما صغير',150],['فتة + كريب',150],['ملفوف + نجريسكو',150]]),
+meals:M([['5 تشيكن استربس',180],['8 تشيكن استربس',250],['2 تشيكن اسكالوب',140],['3 تشيكن اسكالوب',180],['2 شيش طاووق',150],['3 شيش طاووق',200],['2 تشيكن كوردن',220],['3 تشيكن كوردن',330],['Mix شخص',150],['Mix شخصين',250]],'ارز - كول سلو - ثومية - عيش'),
+grill:[{n:'مكس جريل',p:185,d:'2 كفتة و 2 صدور مشوية - ارز - ثومية - بطاطس - عيش',nw:1},{n:'فراخ مشوية',p:150,d:'3 صدور مشوية - ارز - ثومية - بطاطس - عيش',nw:1},{n:'كفتة',p:150,d:'4 صباع كفتة - ارز - ثومية - بطاطس - عيش',nw:1},{n:'شيش طاووق',p:150,d:'2 سيخ شيش طاووق - ارز - ثومية - بطاطس - عيش',nw:1}],
 kids:M([['قطعة دجاج',100],['قطعتين كرانش',100],['قطعة اسكالوب',100],['سيخ شيش',100]],'بطاطس + عصير + خبز'),
-sandwich:sw.flatMap(([n,s,d])=>[{n:n+' (سنجل)',p:s},...(d?[{n:n+' (دبل)',p:d}]:[])]),
-crepe:M([['تشيكن سوبريم',85],['شيش طاووق',90],['كرانشي ميكسيكي',85],['كرانشي باربيكيو',85],['كرانشي سوبريم',80],['كرانشي فاير',85],['كرانشي رانش',85],['كرانشي كوردن',90],['بيج كرانش',110],['شاورما لحمة',85],['هوت بيف',85],['مكس لحوم',95],['سجق',80],['بيج بافالو',110],['كرانشي شيش',110],['كرانشي بيف',110],['كرانشي كباب',110],['4 كرانش',120],['كريب بطاطس',60]]),
-kart:M([['خرطوشة كرانش',150],['خرطوشة تشيكن',150],['خرطوشة شيش',150],['خرطوشة بيف',160],['خرطوشة بافالو',160]]),
-pasta:MK([['تشيكن باشاميل',70,100],['بيف باشاميل',80,120],['نجريسكو',80,120],['ماك اند تشيز',80,120],['هوت بافالو',80,120],['سموكي بيف',80,120],['تشيكن ريد',80,120],['تشيكن فولكانو',80,120]]),
-risotto:MK([['روزيتو كرانشي',80,120],['روزيتو شيش',80,120],['روزيتو فاهيتا',80,120],['سموكي بيف',80,120],['سموكي تشيكن',80,120],['ريزو',80,120]]),
-tortilla:M([['كرانشي',80],['شيش',80],['تشيكن',80],['بيف',80],['فاهيتا',80],['بطاطس',50]]),
-fries:[...MK([['بطاطس',35,50]]),...M([['بطاطس جبنة',75],['تشيكن بطاطس جبنة',90],['كرانش بطاطس جبنة',90],['بيف بطاطس جبنة',90],['مكس بيف بطاطس',95]])],
-drinks:M([['أكشن',20],['مشروب غازي لتر',40],['عصير',20],['مياه صغيرة',10],['مياه كبيرة',15]]),
+sandwich:[...sw.flatMap(([n,s,d])=>[{n:n+' (سنجل)',p:s},...(d?[{n:n+' (دبل)',p:d}]:[])])],
+crepe:M([['تشيكن سوبريم',85],['شيش طاووق',90],['كرانشي ميكسيكي',85],['كرانشي باربيكيو',85],['كرانشي سوبريم',80],['كرانشي فاير',85],['كرانشي رانش',85],['بيج كرانش',110],['شاورما لحمة',85],['مكس لحوم',95],['ميكس فراخ',80],['كريب بطاطس',60]]),
+kart:M([['خرطوشة كرانش',150],['خرطوشة تشيكن',150],['خرطوشة شيش',150],['خرطوشة بيف',160]]),
+pasta:MK([['تشيكن باشاميل',70,100],['بيف باشاميل',80,120],['نجريسكو',80,120],['ماك اند تشيز',80,120]]),
+risotto:MK([['فتة كرانشي',80,120],['فتة شيش',80,120],['سموكي بيف',80,120],['سموكي تشيكن',80,120]]),
+tortilla:[{n:'ساندوتش ملفوف شيش طاووق',p:90,nw:1},{n:'ساندوتش ملفوف كفتة',p:90,nw:1},{n:'ساندوتش ملفوف شاورما لحمة',p:90,nw:1},...M([['كرانشي',80],['شيش',80],['تشيكن',80],['بيف',80],['بطاطس',50]])],
+fries:[...MK([['بطاطس',35,50]]),...M([['بطاطس جبنة',75],['تشيكن بطاطس جبنة',90],['كرانش بطاطس جبنة',90],['بيف بطاطس جبنة',90]])],
 addons:[...MK([['كومبو',50,100]]),{n:'كرانش',p:30},...MK([['تشيز',30,50],['صوص',20,35],['ثومية',15,25],['كول سلو',20,35]]),{n:'عيش',p:5},...MK([['ارز سادة',30,60]])]
 };
-const EXTRAS={pizza:['تشيز','صوص','ثومية'],meals:['ارز سادة','كول سلو','ثومية','عيش','صوص','تشيز'],sandwich:['تشيز','صوص','ثومية','كرانش'],crepe:['تشيز','صوص','ثومية','كرانش'],kart:['تشيز','صوص','ثومية'],tortilla:['تشيز','صوص','ثومية','كرانش'],pasta:['تشيز','صوص','ثومية','عيش'],risotto:['تشيز','صوص','ثومية','عيش'],fries:['تشيز','صوص','ثومية'],kids:['صوص','ثومية']};
+const EXTRAS={pizza:['تشيز','صوص','ثومية'],meals:['ارز سادة','كول سلو','ثومية','عيش','صوص','تشيز'],sandwich:['تشيز','صوص','ثومية','كرانش'],crepe:['تشيز','صوص','ثومية','كرانش'],kart:['تشيز','صوص','ثومية'],tortilla:['تشيز','صوص','ثومية','كرانش'],pasta:['تشيز','صوص','ثومية','عيش'],risotto:['تشيز','صوص','ثومية','عيش'],fries:['تشيز','صوص','ثومية'],kids:['صوص','ثومية'],grill:['ارز سادة','ثومية','عيش','صوص','تشيز']};
 const EXE={'تشيز':'🧀','صوص':'🥫','ثومية':'🧄','كول سلو':'🥗','عيش':'🥖','ارز سادة':'🍚','كرانش':'🍗'};
 // صور الأصناف: 'القسم:اسم الصنف':'رقم.jpg'
 const ITEM_IMG={
- // pizza
- 'pizza:مارجريتا':'1.jpg','pizza:خضروات':'2.jpg','pizza:تشيكن سوبريم':'3.jpg','pizza:تشيكن رانش':'4.jpg','pizza:تشيكن باربيكيو':'5.jpg','pizza:تشيكن شيش':'6.jpg','pizza:تشيكن فاير':'7.jpg','pizza:تشيكن بافالو':'8.jpg','pizza:كرانش سوبريم':'9.jpg','pizza:كرانش رانش':'10.jpg','pizza:كرانش باربيكيو':'11.jpg','pizza:كرانش ديناميت':'12.jpg','pizza:كرانش بيبروني':'13.jpg','pizza:4 سيزون تشيز':'14.jpg','pizza:سموكي بيف':'15.jpg','pizza:هوت سجق':'16.jpg','pizza:بيبروني':'17.jpg','pizza:سوبر سوبريم':'18.jpg','pizza:كيري بسطرمة':'19.jpg','pizza:تونة':'20.jpg',
  // offers
- 'offers:2 كلاسيك سينجل':'21.jpg','offers:2 كلاسيك دبل':'22.jpg',
+ 'offers:فتة + ملفوف شاورما':'124.jpg','offers:2 فتة دجاج':'125.jpg','offers:ساندوتش شيش + ساندوتش كلاسيك':'126.jpg','offers:نجريسكو + كريب شاورما':'127.jpg','offers:2 كريب شاورما فراخ':'128.jpg','offers:2 نجريسكو':'129.jpg','offers:2 ملفوف شاورما':'130.jpg','offers:2 بيتزا شاورما صغير':'131.jpg','offers:فتة + كريب':'132.jpg','offers:ملفوف + نجريسكو':'133.jpg',
+ // kart
+ 'kart:خرطوشة كرانش':'111.jpg','kart:خرطوشة تشيكن':'112.jpg','kart:خرطوشة شيش':'113.jpg','kart:خرطوشة بيف':'114.jpg',
+ // pizza
+ 'pizza:مارجريتا':'1.jpg','pizza:خضروات':'2.jpg','pizza:تشيكن سوبريم':'3.jpg','pizza:تشيكن رانش':'4.jpg','pizza:تشيكن باربيكيو':'5.jpg','pizza:تشيكن فاير':'7.jpg','pizza:تشيكن سموكي':'8.jpg','pizza:كرانش رانش':'10.jpg','pizza:كرانش باربيكيو':'11.jpg','pizza:كرانش ديناميت':'12.jpg','pizza:4 سيزون تشيز':'14.jpg','pizza:سموكي بيف':'15.jpg','pizza:بيبروني':'17.jpg','pizza:ميكس بيف':'18.jpg','pizza:كيري بسطرمة':'19.jpg','pizza:تونة':'20.jpg',
  // pasta
- 'pasta:تشيكن باشاميل':'23.jpg','pasta:بيف باشاميل':'24.jpg','pasta:نجريسكو':'25.jpg','pasta:ماك اند تشيز':'26.jpg','pasta:هوت بافالو':'27.jpg','pasta:سموكي بيف':'28.jpg','pasta:تشيكن ريد':'29.jpg','pasta:تشيكن فولكانو':'30.jpg',
- // sandwich
- 'sandwich:تشيكن كلاسيك':'31.jpg','sandwich:تشيكن فولكانو':'32.jpg','sandwich:تشيكن رانش':'33.jpg','sandwich:تشيكن ديناميت':'34.jpg','sandwich:تشيكن بيج بوس':'35.jpg','sandwich:تشيكن تشيزي':'36.jpg','sandwich:تشيكن تيستي':'37.jpg','sandwich:تشيكن بولو':'38.jpg','sandwich:تشيكن فاير':'39.jpg','sandwich:تشيكن سوبريم':'40.jpg','sandwich:تشيكن فاهيتا':'41.jpg','sandwich:شيش طاووق':'42.jpg',
- // risotto
- 'risotto:روزيتو كرانشي':'43.jpg','risotto:روزيتو شيش':'44.jpg','risotto:روزيتو فاهيتا':'45.jpg','risotto:سموكي بيف':'46.jpg','risotto:سموكي تشيكن':'47.jpg','risotto:ريزو':'116.jpg',
- // tortilla
- 'tortilla:كرانشي':'48.jpg','tortilla:شيش':'49.jpg','tortilla:تشيكن':'50.jpg','tortilla:بيف':'51.jpg','tortilla:فاهيتا':'52.jpg','tortilla:بطاطس':'53.jpg',
- // fries
- 'fries:بطاطس':'54.jpg','fries:بطاطس جبنة':'55.jpg','fries:تشيكن بطاطس جبنة':'56.jpg','fries:كرانش بطاطس جبنة':'57.jpg','fries:بيف بطاطس جبنة':'58.jpg','fries:مكس بيف بطاطس':'59.jpg',
- // addons
- 'addons:كومبو':'60.jpg','addons:كرانش':'61.jpg','addons:تشيز':'62.jpg','addons:صوص':'63.jpg','addons:ثومية':'64.jpg','addons:كول سلو':'65.jpg','addons:عيش':'66.jpg','addons:ارز سادة':'67.jpg',
- // drinks
- 'drinks:أكشن':'68.jpg','drinks:مشروب غازي لتر':'69.jpg','drinks:عصير':'70.jpg','drinks:مياه صغيرة':'71.jpg','drinks:مياه كبيرة':'72.jpg',
+ 'pasta:تشيكن باشاميل':'23.jpg','pasta:بيف باشاميل':'24.jpg','pasta:نجريسكو':'25.jpg','pasta:ماك اند تشيز':'26.jpg',
  // meals
- 'meals:2 تشيكن فرايد':'73.jpg','meals:3 تشيكن فرايد':'74.jpg','meals:3 تشيكن كرانش':'75.jpg','meals:5 تشيكن كرانش':'76.jpg','meals:8 تشيكن كرانش':'77.jpg','meals:2 تشيكن اسكالوب':'78.jpg','meals:3 تشيكن اسكالوب':'79.jpg','meals:4 تشيكن اسكالوب':'80.jpg','meals:2 شيش طاووق':'81.jpg','meals:3 شيش طاووق':'82.jpg','meals:4 شيش طاووق':'83.jpg','meals:2 تشيكن كوردن':'84.jpg','meals:3 تشيكن كوردن':'85.jpg','meals:بيكاتا شامنيون':'86.jpg','meals:اسكالوب تشيز':'87.jpg',
+ 'meals:5 تشيكن استربس':'76.jpg','meals:8 تشيكن استربس':'77.jpg','meals:2 تشيكن اسكالوب':'78.jpg','meals:3 تشيكن اسكالوب':'79.jpg','meals:2 شيش طاووق':'81.jpg','meals:3 شيش طاووق':'82.jpg','meals:2 تشيكن كوردن':'84.jpg','meals:3 تشيكن كوردن':'85.jpg',
+ // grill
+ 'grill:مكس جريل':'117.jpg','grill:فراخ مشوية':'118.jpg','grill:كفتة':'119.jpg','grill:شيش طاووق':'120.jpg',
+ // sandwich
+ 'sandwich:تشيكن كلاسيك':'31.jpg','sandwich:تشيكن فولكانو':'32.jpg','sandwich:تشيكن رانش':'33.jpg','sandwich:تشيكن ديناميت':'34.jpg','sandwich:تشيكن بيج بوس':'35.jpg','sandwich:تشيكن تشيزي':'36.jpg','sandwich:تشيكن تيستي':'37.jpg','sandwich:تشيكن كوردن فاير':'39.jpg','sandwich:شيش طاووق':'42.jpg','tortilla:ساندوتش ملفوف شيش طاووق':'121.jpg','tortilla:ساندوتش ملفوف كفتة':'122.jpg','tortilla:ساندوتش ملفوف شاورما لحمة':'123.jpg',
+ // crepe
+ 'crepe:تشيكن سوبريم':'92.jpg','crepe:شيش طاووق':'93.jpg','crepe:كرانشي ميكسيكي':'94.jpg','crepe:كرانشي باربيكيو':'95.jpg','crepe:كرانشي سوبريم':'96.jpg','crepe:كرانشي فاير':'97.jpg','crepe:كرانشي رانش':'98.jpg','crepe:بيج كرانش':'100.jpg','crepe:شاورما لحمة':'101.jpg','crepe:مكس لحوم':'103.jpg','crepe:كريب بطاطس':'110.jpg','crepe:ميكس فراخ':'109.jpg',
+ // risotto
+ 'risotto:فتة كرانشي':'43.jpg','risotto:فتة شيش':'44.jpg','risotto:سموكي بيف':'46.jpg','risotto:سموكي تشيكن':'47.jpg',
+ // tortilla
+ 'tortilla:كرانشي':'48.jpg','tortilla:شيش':'49.jpg','tortilla:تشيكن':'50.jpg','tortilla:بيف':'51.jpg','tortilla:بطاطس':'53.jpg',
+ // fries
+ 'fries:بطاطس':'54.jpg','fries:بطاطس جبنة':'55.jpg','fries:تشيكن بطاطس جبنة':'56.jpg','fries:كرانش بطاطس جبنة':'57.jpg','fries:بيف بطاطس جبنة':'58.jpg',
  // kids
  'kids:قطعة دجاج':'88.jpg','kids:قطعتين كرانش':'89.jpg','kids:قطعة اسكالوب':'90.jpg','kids:سيخ شيش':'91.jpg',
- // crepe
- 'crepe:تشيكن سوبريم':'92.jpg','crepe:شيش طاووق':'93.jpg','crepe:كرانشي ميكسيكي':'94.jpg','crepe:كرانشي باربيكيو':'95.jpg','crepe:كرانشي سوبريم':'96.jpg','crepe:كرانشي فاير':'97.jpg','crepe:كرانشي رانش':'98.jpg','crepe:كرانشي كوردن':'99.jpg','crepe:بيج كرانش':'100.jpg','crepe:شاورما لحمة':'101.jpg','crepe:هوت بيف':'102.jpg','crepe:مكس لحوم':'103.jpg','crepe:سجق':'104.jpg','crepe:بيج بافالو':'105.jpg','crepe:كرانشي شيش':'106.jpg','crepe:كرانشي بيف':'107.jpg','crepe:كرانشي كباب':'108.jpg','crepe:4 كرانش':'109.jpg','crepe:كريب بطاطس':'110.jpg',
- // kart
- 'kart:خرطوشة كرانش':'111.jpg','kart:خرطوشة تشيكن':'112.jpg','kart:خرطوشة شيش':'113.jpg','kart:خرطوشة بيف':'114.jpg','kart:خرطوشة بافالو':'115.jpg',
+ // addons
+ 'addons:كومبو':'60.jpg','addons:كرانش':'61.jpg','addons:تشيز':'62.jpg','addons:صوص':'63.jpg','addons:ثومية':'64.jpg','addons:كول سلو':'65.jpg','addons:عيش':'66.jpg','addons:ارز سادة':'67.jpg',
 };
  
 const CE=Object.fromEntries(CATS.map(c=>[c[0],c[1]]));
@@ -273,7 +278,7 @@ function thumb(key,base,cls){const src=ITEM_IMG[key+':'+base];
  return`<div class="${cls} img-fallback">${emojiFor(key,base)}${src?`<img data-s="${src}" alt="" referrerpolicy="no-referrer">`:''}</div>`}
 function prodRow(key,g,gi){const base=g.single?g.item.n:g.base;
  const price=g.single?g.item.p:Math.min(...g.variants.map(v=>v.item.p));
- return`<div class="prod" onclick="openProd('${key}',${gi})"><div class="prod-txt"><div class="prod-name">${base}</div><div class="prod-price">${g.single?'':'يبدأ من '}${price} LE</div></div>${thumb(key,base,'thumb')}<span class="plus">+</span></div>`}
+ return`<div class="prod" onclick="openProd('${key}',${gi})"><div class="prod-txt"><div class="prod-name">${base}${(g.single?g.item.nw:g.variants.some(v=>v.item.nw))?'<span class="newb">جديد</span>':''}</div>${g.single&&g.item.d&&key==='grill'?`<div class="prod-desc">${g.item.d}</div>`:''}<div class="prod-price">${g.single?'':'يبدأ من '}${price} LE</div></div>${thumb(key,base,'thumb')}<span class="plus">+</span></div>`}
  
 // ===== الكارت =====
 let cart={},P=null;
@@ -296,10 +301,9 @@ function cartSum(){let t=0;for(const k in cart)t+=cart[k].qty*cart[k].price;retu
 function toast(m){const t=$('ck-toast');t.innerText=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1600)}
  
 // ===== شاشة الصنف =====
-function stuffPrice(){return P&&P.key==='pizza'&&P.sel>=0?(STUFF[P.g.variants[P.sel].size]||0):0}
 function openProd(key,gi){
  const g=G[key][gi],base=g.single?g.item.n:g.base;
- P={key,g,sel:g.single?0:(g.variants.length==1?0:-1),qty:1,stuff:false};
+ P={key,g,sel:g.single?0:(g.variants.length==1?0:-1),qty:1};
  $('sh-hero').innerHTML=thumb(key,base,'sh-img');{const im=$('sh-hero').querySelector('img[data-s]');if(im){im.fetchPriority='high';imgGo(im)}}$('sh-name').innerText=base;
  $('sh-desc').innerText=g.single&&g.item.d?'يشمل: '+g.item.d:'';
  $('sh-sizes-wrap').style.display=g.single?'none':'block';
@@ -326,27 +330,23 @@ function toggleEx(b){const was=b.classList.contains('sel');
  b.parentElement.querySelectorAll('.xchip').forEach(c=>c.classList.remove('sel'));if(!was)b.classList.add('sel');refreshSheet()}
 function shQty(d){P.qty=Math.max(1,Math.min(99,P.qty+d));$('sh-qty').innerText=P.qty;refreshSheet()}
 function refreshSheet(){
- const sp=stuffPrice();if(!sp)P.stuff=false;
- $('sh-stuff-wrap').style.display=sp?'block':'none';
- $('sh-stuff').classList.toggle('sel',P.stuff);$('sh-stuff-p').innerText='+'+sp+' LE';
  document.querySelectorAll('#sh-sizes .opt').forEach((o,j)=>o.classList.toggle('sel',j===P.sel));
  const b=$('sh-add');
  if(P.sel<0){b.disabled=true;b.innerText='اختر المقاس';return}
  if(!isOpen()){b.disabled=true;b.innerText='مغلق حالياً';return}
- let u=(P.g.single?P.g.item:P.g.variants[P.sel].item).p+(P.stuff?sp:0);
+ let u=(P.g.single?P.g.item:P.g.variants[P.sel].item).p;
  document.querySelectorAll('#sh-extras .xchip.sel').forEach(c=>u+=+c.dataset.price);
  b.disabled=false;b.innerText=`أضف للسلة · ${u*P.qty} LE`}
 function addProd(){
  if(P.sel<0||!isOpen())return;
  const v=P.g.single?{item:P.g.item,idx:P.g.idx}:P.g.variants[P.sel];
  addLine(`id_${P.key}_${v.idx}`,v.item.n,v.item.p,P.qty,P.key,$('sh-note').value.trim());
- if(P.stuff){const z=P.g.variants[P.sel].size;addLine('stuff_'+z,'حشو أطراف ('+z+')',STUFF[z],P.qty,'addons','')}
  document.querySelectorAll('#sh-extras .xchip.sel').forEach(c=>addLine(c.dataset.id,c.dataset.name,+c.dataset.price,P.qty,'addons',''));
  closeProd();toast('تمت الإضافة للسلة ✅')}
  
 // ===== الطلب =====
 // (للتوصيل لما نفعّله) 
-const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',30],['المكتبات',25],['الأربعين',35],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
+const AREAS=[['الهلالي',25],['الجمهورية',25],['فريال',25],['النميس',25],['الأزهر',15],['مصنع سيد أو المجاهدين أو البيسري',25],['المكتبات',25],['الأربعين',35],['المعلمين',35],['النزلة',30],['مركز الفتح نفسه',40],['أبراج السعودين عند بنزيمة بني مر',40]];
 AREAS.forEach((a,i)=>{const o=document.createElement('option');o.value=i;o.textContent=a[0];$('user-area').appendChild(o)});
 const area=()=>{const v=$('user-area').value;return v===''?null:AREAS[+v]};
 let OT='del'; // del = توصيل (الأساسي) | pick = استلام من الفرع
@@ -358,10 +358,10 @@ function setOT(t){OT=t;$('ot-list').style.display='none';$('ot-cur').style.displ
  $('del-fields').style.display=t==='del'?'block':'none';
  $('ot-del').classList.toggle('sel',t==='del');$('ot-pick').classList.toggle('sel',t==='pick');
  refreshTotals();validate()}
-const DISC_ON=true,DISC=0.15,DISC_DELIVERY=true,OFFER_CAT='offers'; // DISC_DELIVERY: الخصم يشمل مصاريف التوصيل (false = على الأصناف بس) // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
+const DISC_ON=true,DISC=0.10,MIN_DISC=200,DISC_DELIVERY=true,OFFER_CAT='offers'; // DISC_DELIVERY: الخصم يشمل مصاريف التوصيل (false = على الأصناف بس) // خصم الافتتاح: غيّر DISC_ON لـ false لإيقافه
 function eligible(){let t=0;for(const k in cart)if(cart[k].cat!==OFFER_CAT)t+=cart[k].qty*cart[k].price;return t}
-function discount(){const e=eligible();if(!DISC_ON||!e)return 0;return Math.round((e+(DISC_DELIVERY?fee():0))*DISC)}
-function refreshTotals(){const t=cartSum(),d=discount();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';
+function discount(){const e=eligible();if(!DISC_ON||e<MIN_DISC)return 0;return Math.round((e+(DISC_DELIVERY?fee():0))*DISC)}
+function refreshTotals(){const t=cartSum(),d=discount();$('items-total').innerText=t;$('disc-val').innerText=d;$('disc-row').style.display=d?'flex':'none';const e=eligible(),h=$('disc-hint');if(h){const need=MIN_DISC-e;h.style.display=(DISC_ON&&e>0&&need>0)?'flex':'none';$('disc-hint-t').innerText='أضف أصناف بقيمة '+need+' جنيه لتحصل على خصم الافتتاح 10%'}
  const dl=OT==='del',a=area();$('fee-row').style.display=dl?'flex':'none';$('delivery-fee').innerText=a?a[1]+' LE':'—';
  $('grand-label').innerText=dl?'الإجمالي الكلي':'المجموع بعد الخصم';$('grand-total').innerText=t-d+fee()}
 function openOrder(){
@@ -385,7 +385,7 @@ function sendWA(){
  let msg=`طلب جديد\nالاسم: ${$('user-name').value.trim()}\nالموبايل: ${$('user-phone').value}\n${OT==='del'?`طريقة الاستلام: توصيل\nالمنطقة: ${area()[0]}\nالعنوان: ${$('user-addr').value.trim()}`:'طريقة الاستلام: استلام من الفرع'}\n\nالاصناف:\n`,t=0;
  for(const k in cart){const c=cart[k],p=c.qty*c.price;t+=p;msg+=`\nالصنف: ${prefix(c.cat,c.name)}${c.name}\nالعدد: ${c.qty}\nالاجمالي: ${p} جنيه\n`;if(c.note)msg+=`ملاحظة: ${c.note}\n`}
  const g=$('order-notes').value.trim();if(g)msg+=`\nملاحظات عامة: ${g}`;
- const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+(d?`\nخصم الافتتاح (15 بالمائة): ${d} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
+ const d=discount(t);msg+=`\nحساب الاصناف: ${t} جنيه`+(OT==='del'?`\nمصاريف التوصيل: ${fee()} جنيه`:'')+(d?`\nخصم الافتتاح (10 بالمائة): ${d} جنيه`:'')+`\nالسعر النهائي: ${t-d+fee()} جنيه`;
  try{localStorage.setItem('kranch_history_v2',JSON.stringify(Object.values(cart).map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty,cat:c.cat}))))}catch(e){}
  window.open(`https://wa.me/201150303011?text=${encodeURIComponent(msg)}`,'_blank')}
  
@@ -394,9 +394,9 @@ function norm(s){return String(s).toLowerCase().replace(/[\u064B-\u065F\u0670\u0
 function normTok(t){t=norm(t);return(t.length>3&&t.startsWith('ال'))?t.slice(2):t}
 function tokenize(s){return norm(s).split(/[^\u0621-\u064Aa-z0-9]+/).filter(Boolean).map(normTok)}
 const STOP=new Set(['من','في','على','علي','مع','بدون','غير','و']);
-const ALT_RAW={'دجاج':['تشيكن'],'فراخ':['تشيكن'],'فرخه':['تشيكن'],'تشكن':['تشيكن'],'شيكن':['تشيكن'],'chicken':['تشيكن'],'pizza':['بيتزا'],'بتزا':['بيتزا'],'بيتسا':['بيتزا'],'بيزا':['بيتزا'],'crepe':['كريب'],'crepes':['كريب'],'pasta':['مكرونه'],'باستا':['مكرونه','باستا'],'معكرونه':['مكرونه'],'مكرونات':['مكرونه'],'risotto':['روزيتو'],'ريزوتو':['روزيتو'],'رزيتو':['روزيتو'],'tortilla':['تورتيلا'],'fries':['بطاطس'],'فرايز':['بطاطس'],'بطاطا':['بطاطس'],'meal':['وجبه'],'وجبات':['وجبه'],'bbq':['باربيكيو'],'barbecue':['باربيكيو'],'باربكيو':['باربيكيو'],'بربيكيو':['باربيكيو'],'cheese':['تشيز'],'جبنه':['تشيز','جبنه'],'جبن':['تشيز','جبنه'],'beef':['بيف','لحمه'],'بيف':['بيف','لحمه'],'لحمه':['لحمه','بيف'],'لحم':['لحمه','لحوم','بيف'],'ranch':['رانش'],'رانتش':['رانش'],'supreme':['سوبريم'],'buffalo':['بافالو'],'crunch':['كرانش'],'crispy':['كرانش'],'كرنش':['كرانش'],'sauce':['صوص'],'garlic':['ثوميه'],'rice':['ارز'],'bread':['عيش'],'coleslaw':['كول'],'fire':['فاير'],'hot':['هوت'],'margherita':['مارجريتا'],'مارغريتا':['مارجريتا'],'veggie':['خضروات'],'vegetable':['خضروات'],'خضار':['خضروات'],'pepperoni':['بيبروني'],'بيبيروني':['بيبروني'],'sausage':['سجق'],'kebab':['كباب'],'shish':['شيش'],'tawook':['طاووق'],'smoky':['سموكي'],'dynamite':['ديناميت'],'cordon':['كوردن'],'scallop':['اسكالوب'],'mac':['ماك'],'macaroni':['ماك'],'bechamel':['باشاميل'],'volcano':['فولكانو'],'red':['ريد'],'small':['صغير'],'medium':['وسط'],'large':['كبير'],'big':['كبير'],'كبيره':['كبير'],'صغيره':['صغير'],'متوسط':['وسط'],'tuna':['تونه'],'sandwich':['ساندويتش'],'سندويتش':['ساندويتش'],'سندوتش':['ساندويتش'],'ساندوتش':['ساندويتش'],'كرطوشه':['خرطوشه'],'خرطوش':['خرطوشه'],'cartouche':['خرطوشه'],'drink':['ساقع'],'drinks':['ساقع'],'مشروب':['ساقع','مشروبات'],'fried':['فرايد'],'فراید':['فرايد']};
+const ALT_RAW={'دجاج':['تشيكن'],'فراخ':['تشيكن'],'فرخه':['تشيكن'],'تشكن':['تشيكن'],'شيكن':['تشيكن'],'chicken':['تشيكن'],'pizza':['بيتزا'],'بتزا':['بيتزا'],'بيتسا':['بيتزا'],'بيزا':['بيتزا'],'crepe':['كريب'],'crepes':['كريب'],'pasta':['مكرونه'],'باستا':['مكرونه','باستا'],'معكرونه':['مكرونه'],'مكرونات':['مكرونه'],'risotto':['فته'],'ريزوتو':['فته'],'رزيتو':['فته'],'روزيتو':['فته'],'fatta':['فته'],'fata':['فته'],'tortilla':['تورتيلا','ملفوف'],'wrap':['ملفوف'],'grill':['مشوي'],'grilled':['مشوي'],'kofta':['كفته'],'kafta':['كفته'],'fries':['بطاطس'],'فرايز':['بطاطس'],'بطاطا':['بطاطس'],'meal':['وجبه'],'وجبات':['وجبه'],'bbq':['باربيكيو'],'barbecue':['باربيكيو'],'باربكيو':['باربيكيو'],'بربيكيو':['باربيكيو'],'cheese':['تشيز'],'جبنه':['تشيز','جبنه'],'جبن':['تشيز','جبنه'],'beef':['بيف','لحمه'],'بيف':['بيف','لحمه'],'لحمه':['لحمه','بيف'],'لحم':['لحمه','لحوم','بيف'],'ranch':['رانش'],'رانتش':['رانش'],'supreme':['سوبريم'],'buffalo':['بافالو'],'crunch':['كرانش'],'crispy':['كرانش'],'كرنش':['كرانش'],'sauce':['صوص'],'garlic':['ثوميه'],'rice':['ارز'],'bread':['عيش'],'coleslaw':['كول'],'fire':['فاير'],'hot':['هوت'],'margherita':['مارجريتا'],'مارغريتا':['مارجريتا'],'veggie':['خضروات'],'vegetable':['خضروات'],'خضار':['خضروات'],'pepperoni':['بيبروني'],'بيبيروني':['بيبروني'],'sausage':['سجق'],'kebab':['كباب'],'shish':['شيش'],'tawook':['طاووق'],'smoky':['سموكي'],'dynamite':['ديناميت'],'cordon':['كوردن'],'scallop':['اسكالوب'],'mac':['ماك'],'macaroni':['ماك'],'bechamel':['باشاميل'],'volcano':['فولكانو'],'red':['ريد'],'small':['صغير'],'medium':['وسط'],'large':['كبير'],'big':['كبير'],'كبيره':['كبير'],'صغيره':['صغير'],'متوسط':['وسط'],'tuna':['تونه'],'sandwich':['ساندويتش'],'سندويتش':['ساندويتش'],'سندوتش':['ساندويتش'],'ساندوتش':['ساندويتش'],'كرطوشه':['خرطوشه'],'خرطوش':['خرطوشه'],'cartouche':['خرطوشه'],'fried':['فرايد'],'فراید':['فرايد']};
 const ALT={};Object.keys(ALT_RAW).forEach(k=>{ALT[normTok(k)]=ALT_RAW[k].map(normTok)});
-const CAT_ALIAS={pizza:'بيتزا',meals:'وجبه',crepe:'كريب',pasta:'مكرونه باستا',risotto:'روزيتو',tortilla:'تورتيلا',fries:'بطاطس',addons:'اضافه اضافات كومبو',offers:'عروض عرض',kart:'خرطوشه',sandwich:'ساندويتش سندويتش',kids:'اطفال طفل',drinks:'ساقع مشروبات'};
+const CAT_ALIAS={pizza:'بيتزا',meals:'وجبه',crepe:'كريب',pasta:'مكرونه باستا',risotto:'فته فتة',tortilla:'ملفوف تورتيلا',fries:'بطاطس',addons:'اضافه اضافات كومبو',offers:'عروض عرض',kart:'خرطوشه',sandwich:'ساندويتش سندويتش',kids:'اطفال طفل',grill:'مشوي مشويات جريل'};
 function lev(a,b){const m=a.length,n=b.length;let prev=Array.from({length:n+1},(_,j)=>j);
  for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=cur}
  return prev[n]}
@@ -428,7 +428,7 @@ function exitSearch(){$('live-search').value='';$('search-box').style.display='n
 // ===== اطلبها مجدداً (آخر طلب اتبعت) =====
 let HIST=[];
 function loadReorder(){let last=null;try{last=JSON.parse(localStorage.getItem('kranch_history_v2'))}catch(e){}
- HIST=(last||[]).filter(c=>c&&c.name&&(/^حشو أطراف/.test(c.name)||(menu[c.cat]||[]).some(x=>x.n===c.name)));
+ HIST=(last||[]).filter(c=>c&&c.name&&((menu[c.cat]||[]).some(x=>x.n===c.name)));
  const on=HIST.length>0;$('sec-reorder').style.display=on?'block':'none';$('nav-reorder').style.display=on?'inline-block':'none';
  if(on)$('reorder-list').innerHTML=HIST.map((c,i)=>`<div class="crow"><div style="flex:1"><div style="font-weight:900">${prefix(c.cat,c.name)}${esc(c.name)}</div><div style="color:#ea580c;font-weight:700;font-size:.9rem">${c.price} LE</div></div><button class="cb" onclick="reAdd(${i})">+</button></div>`).join('')}
 function reAdd(i){if(!isOpen()){toast('المطعم مغلق حالياً');return}
@@ -451,8 +451,8 @@ function startImgs(){const all=[...document.querySelectorAll('#sections img[data
  
 // ===== واجهة =====
 function init(){
- $('main-nav').innerHTML='<div class="nl" id="nav-reorder" data-t="sec-reorder" onclick="jumpTo(\'sec-reorder\')" style="display:none">اطلبها مجدداً</div>'+CATS.map(c=>`<div class="nl" data-t="sec-${c[0]}" onclick="jumpTo('sec-${c[0]}')">${c[2]}</div>`).join('');
- $('sections').innerHTML=CATS.map(([k,e,t,gr])=>`<div class="card sec" id="sec-${k}"><h2 class="stitle">${e} ${t}</h2>${NOTE[k]?`<p class="snote">${NOTE[k]}</p>`:''}<div>${G[k].map((g,i)=>prodRow(k,g,i)).join('')}</div></div>`).join('');
+ $('main-nav').innerHTML='<div class="nl" id="nav-reorder" data-t="sec-reorder" onclick="jumpTo(\'sec-reorder\')" style="display:none">اطلبها مجدداً</div>'+CATS.map(c=>`<div class="nl${c[0]==='offers'?' hot':''}" data-t="sec-${c[0]}" onclick="jumpTo('sec-${c[0]}')">${c[2]}${(c[0]==='grill'||c[0]==='tortilla')?' <span class="newb">جديد</span>':''}</div>`).join('');
+ $('sections').innerHTML=CATS.map(([k,e,t,gr])=>`<div class="card sec" id="sec-${k}"><h2 class="stitle">${e} ${t}</h2>${NOTE[k]?`<p class="snote${k==='offers'?' hot':''}">${NOTE[k]}</p>`:''}<div>${G[k].map((g,i)=>prodRow(k,g,i)).join('')}</div></div>`).join('');
  document.querySelector('.nl:not(#nav-reorder)').classList.add('on');loadReorder()}
 function jumpTo(id){scrollTo({top:$(id).getBoundingClientRect().top+pageYOffset-130,behavior:'smooth'})}
 addEventListener('scroll',()=>{let a='';document.querySelectorAll('.sec').forEach(s=>{if(!s.offsetParent)return;if(pageYOffset>=s.offsetTop-180)a=s.id});
